@@ -1,2 +1,2 @@
-# Chain-Watcher
+# chain-watcher
 Chain Watcher for UV
