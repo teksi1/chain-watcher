@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#0d1215">
     <meta name="description" content="Unbroken Valkyries Chain Watcher">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'none'; object-src 'none'; frame-src https://script.google.com https://*.googleusercontent.com; style-src 'self'; script-src 'self'; img-src 'self' data:">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; base-uri 'none'; object-src 'none'; frame-src https://script.google.com https://*.googleusercontent.com; style-src 'self'; script-src 'self'; img-src 'self' data:;"
+    >
     <title>Unbroken Valkyries — Chain Watcher</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="styles.css">
@@ -25,7 +28,15 @@
       <span>Opening Chain Watcher…</span>
     </div>
 
-    <iframe id="chain-watcher" class="app-frame hidden" title="Unbroken Valkyries Chain Watcher" referrerpolicy="strict-origin-when-cross-origin" allow="clipboard-write"></iframe>
+    <iframe
+      id="chain-watcher"
+      class="app-frame hidden"
+      title="Unbroken Valkyries Chain Watcher"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allow="clipboard-write"
+      scrolling="no"
+    ></iframe>
+
     <script src="config.js"></script>
     <script src="app.js"></script>
   </body>
