@@ -128,7 +128,6 @@ code {
   padding: 12px;
 }
 
-
 .button-link {
   display: inline-flex;
   align-items: center;
@@ -153,6 +152,7 @@ code {
   z-index: 60;
 }
 
-#configured-app-url {
+#configured-app-url,
+#configured-app-url-error {
   overflow-wrap: anywhere;
 }
