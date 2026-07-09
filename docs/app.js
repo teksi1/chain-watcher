@@ -1,5 +1,5 @@
 (() => {
-    const API_CONFIG = window.CHAIN_WATCHER_API_CONFIG || {};
+    const API_CONFIG = window.CHAIN_WATCHER_API_CONFIG || window.CHAIN_WATCHER_CONFIG || {};
     const API_URL = String(API_CONFIG.apiUrl || '').trim();
     const API_TIMEOUT_MS = Number(API_CONFIG.timeoutMs || 30000);
     let apiRequestCounter = 0;
