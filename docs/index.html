@@ -240,6 +240,40 @@
                 </div>
                 <p id="admin-export-result" class="hint event-export-result" aria-live="polite"></p>
               </section>
+              <section class="activity-log-admin">
+                <div class="activity-log-heading">
+                  <div>
+                    <h3>Activity log</h3>
+                    <p class="hint">A readable view of the raw Logs sheet. Schedule saves can be expanded to show exactly which slots changed.</p>
+                  </div>
+                  <button id="admin-refresh-logs" class="button button-secondary" type="button">Refresh log</button>
+                </div>
+                <div class="activity-log-filters">
+                  <label>Category
+                    <select id="log-category-filter">
+                      <option value="all">All categories</option>
+                      <option value="schedule">Schedule</option>
+                      <option value="identity">Identity</option>
+                      <option value="admin">Admin</option>
+                      <option value="torn">Torn/API</option>
+                      <option value="api">App/API errors</option>
+                      <option value="audit">Legacy audit</option>
+                    </select>
+                  </label>
+                  <label>Outcome
+                    <select id="log-outcome-filter">
+                      <option value="all">All outcomes</option>
+                      <option value="success">Success</option>
+                      <option value="failure">Failure</option>
+                    </select>
+                  </label>
+                  <label>Search
+                    <input id="log-search" type="search" placeholder="Member, action, request ID...">
+                  </label>
+                </div>
+                <p id="activity-log-summary" class="hint activity-log-summary" aria-live="polite"></p>
+                <div id="activity-log-list" class="activity-log-list"></div>
+              </section>
               <section class="manual-members-admin">
                 <div>
                   <h3>Manual members</h3>
