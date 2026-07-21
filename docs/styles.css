@@ -178,12 +178,6 @@
   .notice { padding: 13px 16px; border: 1px solid rgba(247, 185, 85, 0.35); border-radius: 12px; background: var(--amber-soft); color: #ffda91; }
   .hidden { display: none !important; }
 
-  .war-reports { position: relative; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 18px; align-items: center; padding: 18px; border: 1px solid rgba(143, 200, 214, 0.32); border-radius: 6px 16px; background: linear-gradient(105deg, rgba(143, 200, 214, 0.12), rgba(17, 23, 27, 0.94) 48%, rgba(198, 154, 82, 0.1)); box-shadow: 0 14px 36px rgba(0, 0, 0, 0.24); }
-  .war-reports h2 { margin-bottom: 4px; font-size: 1.12rem; }
-  .war-reports p { max-width: 780px; margin: 0; color: var(--muted); font-size: 0.78rem; line-height: 1.5; }
-  .war-report-button { display: inline-flex; align-items: center; gap: 9px; text-decoration: none; white-space: nowrap; }
-  .war-report-button span { padding: 3px 6px; border-radius: 999px; background: rgba(143, 200, 214, 0.12); color: var(--ice); font-size: 0.58rem; text-transform: uppercase; }
-
   .newcomer-guide { position: relative; overflow: hidden; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 16px 18px; border: 1px solid rgba(229, 193, 124, 0.45); border-radius: 6px 16px; background: linear-gradient(105deg, rgba(198, 154, 82, 0.18), rgba(17, 23, 27, 0.94) 48%, rgba(143, 200, 214, 0.08)); box-shadow: 0 14px 36px rgba(0, 0, 0, 0.24); }
   .newcomer-guide::after { content: ""; position: absolute; right: 17%; top: -46px; width: 90px; height: 90px; transform: rotate(45deg); border: 1px solid rgba(229, 193, 124, 0.08); pointer-events: none; }
   .newcomer-guide-mark { display: grid; place-items: center; width: 46px; height: 46px; border: 1px solid rgba(229, 193, 124, 0.65); border-radius: 50%; background: rgba(8, 13, 15, 0.62); color: var(--bronze-light); font-family: Georgia, serif; font-size: 1.45rem; box-shadow: 0 0 24px rgba(198, 154, 82, 0.12); }
@@ -682,8 +676,6 @@
     .nav-profile { order: -1; }
     .nav-resource-menu { left: 0; right: auto; width: min(290px, calc(100vw - 50px)); }
     .page-anchor { scroll-margin-top: 16px; }
-    .war-reports { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 14px; }
-    .war-report-button { justify-content: center; width: 100%; white-space: normal; }
     .newcomer-guide { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 14px; }
     .newcomer-guide-button { grid-column: 1 / -1; justify-content: center; width: 100%; }
     .my-bookings { padding: 16px; }
