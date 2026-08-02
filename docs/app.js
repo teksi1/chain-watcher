@@ -1335,7 +1335,7 @@
             stuckLoading.setAttribute('aria-hidden', 'true');
           }
           document.body.classList.remove('cw-loading');
-        }, 30000);
+        }, Math.max(30000, (Number.isFinite(API_TIMEOUT_MS) ? API_TIMEOUT_MS : 30000) + 5000));
       }
 
       scheduleLayoutPublish();
