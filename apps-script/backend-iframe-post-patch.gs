@@ -54,11 +54,16 @@ function createFrameApiResponse_(e, payload) {
   const html = [
     '<!doctype html><meta charset="utf-8">',
     '<script>',
-    'window.parent.postMessage(',
+    '(function(){',
+    'var message=',
     safeScriptJson_(message),
-    ',',
+    ';',
+    'var origin=',
     safeScriptJson_(origin),
-    ');',
+    ';',
+    'try{window.top.postMessage(message,origin);}catch(ignore){}',
+    'try{window.parent.postMessage(message,origin);}catch(ignore){}',
+    '}());',
     '</script>',
   ].join('');
 
