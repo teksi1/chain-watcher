@@ -2,6 +2,7 @@
     const API_CONFIG = window.CHAIN_WATCHER_API_CONFIG || window.CHAIN_WATCHER_CONFIG || {};
     const API_URL = String(API_CONFIG.apiUrl || '').trim();
     const API_TIMEOUT_MS = Number(API_CONFIG.timeoutMs || 30000);
+    const IDENTITY_CONFIRM_TIMEOUT_MS = 180000;
     let apiRequestCounter = 0;
     if (window.__CHAIN_WATCHER_EMBED_DENIED__) return;
     const STATUS_OPTIONS = ['Online', 'Watching', 'DUMP', 'Offline'];
@@ -945,15 +946,30 @@
       setLoading(true);
       setIdentityError('');
       try {
-        const result = await server('confirmMemberIdentity', state.pendingConfirmationToken);
+        const result = await confirmMemberSession(state.pendingConfirmationToken);
         state.sessionToken = result.sessionToken;
         rememberSession(result.sessionToken);
-        applyData(result.data);
-        toast(`Identity locked to ${result.data.auth.member.name}.`);
+        if (result.data) {
+          applyData(result.data);
+        } else {
+          await loadData(false);
+        }
+        const member = (state.data && state.data.auth && state.data.auth.member) || result.member || state.pendingMember;
+        toast(`Identity locked to ${member ? member.name : 'member'}.`);
       } catch (error) {
         setIdentityError(error && error.message ? error.message : String(error));
       } finally {
         setLoading(false);
+      }
+    }
+
+    async function confirmMemberSession(confirmationToken) {
+      try {
+        return await serverWithTimeout(IDENTITY_CONFIRM_TIMEOUT_MS, 'confirmMemberIdentityFast', confirmationToken);
+      } catch (error) {
+        const message = error && error.message ? error.message : String(error);
+        if (!/Unknown or blocked API function|confirmMemberIdentityFast/i.test(message)) throw error;
+        return serverWithTimeout(IDENTITY_CONFIRM_TIMEOUT_MS, 'confirmMemberIdentity', confirmationToken);
       }
     }
 
@@ -1262,6 +1278,10 @@
     }
 
     function server(functionName, ...args) {
+      return serverWithTimeout(API_TIMEOUT_MS, functionName, ...args);
+    }
+
+    function serverWithTimeout(timeoutMs, functionName, ...args) {
       if (!API_URL) {
         return Promise.reject(new Error('Chain Watcher API URL is missing from config.js.'));
       }
@@ -1298,7 +1318,7 @@
         timer = window.setTimeout(() => {
           cleanup();
           reject(new Error('Chain Watcher API request timed out.'));
-        }, Number.isFinite(API_TIMEOUT_MS) && API_TIMEOUT_MS >= 5000 ? API_TIMEOUT_MS : 30000);
+        }, Number.isFinite(timeoutMs) && timeoutMs >= 5000 ? timeoutMs : 30000);
 
         url.searchParams.set('cwApi', '1');
         url.searchParams.set('fn', functionName);
