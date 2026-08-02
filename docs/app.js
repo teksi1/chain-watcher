@@ -7,6 +7,7 @@
     const STATUS_OPTIONS = ['Online', 'Watching', 'DUMP', 'Offline'];
     const LOCAL_TIME_ZONE = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local time';
     const SESSION_STORAGE_KEY = 'chainWatcherMemberSession';
+    const SESSION_BACKUP_KEY = 'chainWatcherMemberSessionBackup';
     const state = {
       data: null,
       sessionToken: readSessionToken(),
@@ -299,7 +300,11 @@
     async function loadData(showOverlay) {
       if (showOverlay) setLoading(true);
       try {
-        const data = await server('getAppData', state.sessionToken);
+        let data = await server('getAppData', state.sessionToken);
+        if (state.sessionToken && !(data.auth && data.auth.authenticated)) {
+          await new Promise((resolve) => window.setTimeout(resolve, 900));
+          data = await server('getAppData', state.sessionToken);
+        }
         applyData(data);
       } catch (error) {
         showError(error);
@@ -324,9 +329,12 @@
       setAuthBodyState(authenticated);
       if (authenticated) closeIdentityGate();
       else {
-        clearRememberedSession();
-        state.sessionToken = '';
-        openIdentityGate();
+        if (state.sessionToken) {
+          openIdentityGate('Your saved member session could not be confirmed. Try refreshing once, or verify your API key again.');
+        } else {
+          clearRememberedSession();
+          openIdentityGate();
+        }
       }
       renderAll();
     }
@@ -812,6 +820,14 @@
       try {
         const stored = localStorage.getItem(SESSION_STORAGE_KEY);
         if (stored) return stored;
+        const backup = localStorage.getItem(SESSION_BACKUP_KEY);
+        if (backup) return backup;
+      } catch (ignore) {
+        // Try session storage and the first-party cookie below.
+      }
+      try {
+        const sessionStored = sessionStorage.getItem(SESSION_STORAGE_KEY);
+        if (sessionStored) return sessionStored;
       } catch (ignore) {
         // Cookie fallback below.
       }
@@ -823,7 +839,13 @@
     function rememberSession(token) {
       try {
         localStorage.setItem(SESSION_STORAGE_KEY, token);
+        localStorage.setItem(SESSION_BACKUP_KEY, token);
         localStorage.removeItem('chainWatcherMember');
+      } catch (ignore) {
+        // Session storage and the first-party cookie remain as fallbacks.
+      }
+      try {
+        sessionStorage.setItem(SESSION_STORAGE_KEY, token);
       } catch (ignore) {
         // The first-party cookie remains as a fallback.
       }
@@ -833,7 +855,13 @@
     function clearRememberedSession() {
       try {
         localStorage.removeItem(SESSION_STORAGE_KEY);
+        localStorage.removeItem(SESSION_BACKUP_KEY);
         localStorage.removeItem('chainWatcherMember');
+      } catch (ignore) {
+        // Continue with session storage and cookie removal.
+      }
+      try {
+        sessionStorage.removeItem(SESSION_STORAGE_KEY);
       } catch (ignore) {
         // Continue with cookie removal.
       }
