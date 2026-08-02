@@ -798,12 +798,16 @@
 
   .top-nav {
     top: 10px;
-    min-height: 54px;
-    padding: 8px 10px;
-    border-color: rgba(198, 154, 82, 0.22);
-    border-left: 3px solid var(--bronze);
+    min-height: 62px;
+    padding: 10px 12px;
+    border-color: rgba(198, 154, 82, 0.34);
+    border-left: 4px solid var(--bronze);
+    border-bottom-color: rgba(229, 193, 124, 0.28);
     border-radius: 8px;
-    background: rgba(9, 14, 16, 0.94);
+    background:
+      linear-gradient(180deg, rgba(21, 30, 32, 0.98), rgba(8, 14, 15, 0.96)),
+      rgba(9, 14, 16, 0.96);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.34), inset 0 -1px 0 rgba(229, 193, 124, 0.08);
   }
 
   .nav-brand {
@@ -837,18 +841,28 @@
   }
 
   .nav-link {
-    min-height: 34px;
+    min-height: 36px;
     border-radius: 7px;
     font-size: 0.72rem;
   }
 
   .nav-profile {
+    justify-content: center;
+    min-height: 36px;
     max-width: 190px;
+    padding: 0 11px;
+    gap: 7px;
+    line-height: 1;
   }
 
   .nav-profile span:last-child {
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .profile-status-dot {
+    flex: 0 0 7px;
+    align-self: center;
   }
 
   .hero {
