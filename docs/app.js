@@ -1282,37 +1282,57 @@
     }
 
     function serverWithTimeout(timeoutMs, functionName, ...args) {
+      return serverViaFramePost(timeoutMs, functionName, ...args);
+    }
+
+    function serverViaFramePost(timeoutMs, functionName, ...args) {
       if (!API_URL) {
         return Promise.reject(new Error('Chain Watcher API URL is missing from config.js.'));
       }
 
       return new Promise((resolve, reject) => {
-        const callbackName = `__cwApiCallback_${Date.now()}_${apiRequestCounter += 1}`;
-        const script = document.createElement('script');
-        const url = new URL(API_URL);
+        const requestId = `cw_api_${Date.now()}_${apiRequestCounter += 1}`;
+        const iframeName = `${requestId}_frame`;
+        const iframe = document.createElement('iframe');
+        const form = document.createElement('form');
         let finished = false;
         let timer = null;
+        let loadGraceTimer = null;
 
         function cleanup() {
           if (finished) return;
           finished = true;
           window.clearTimeout(timer);
-          try { delete window[callbackName]; } catch (ignore) { window[callbackName] = undefined; }
-          if (script.parentNode) script.parentNode.removeChild(script);
+          window.clearTimeout(loadGraceTimer);
+          window.removeEventListener('message', onMessage);
+          if (form.parentNode) form.parentNode.removeChild(form);
+          if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
         }
 
-        window[callbackName] = (payload) => {
+        function onMessage(event) {
+          const data = event && event.data;
+          if (!data || data.source !== 'chain-watcher-api' || data.requestId !== requestId) return;
           cleanup();
+          const payload = data.payload;
           if (payload && payload.ok) {
             resolve(payload.result);
             return;
           }
           reject(new Error(payload && payload.error ? payload.error : 'Chain Watcher API request failed.'));
+        }
+
+        iframe.onerror = () => {
+          cleanup();
+          reject(new Error('Chain Watcher API frame request failed. Check the deployed Apps Script /exec URL and deployment access.'));
         };
 
-        script.onerror = () => {
-          cleanup();
-          reject(new Error('Chain Watcher API script request failed. Check the deployed Apps Script /exec URL and deployment access.'));
+        iframe.onload = () => {
+          if (finished) return;
+          window.clearTimeout(loadGraceTimer);
+          loadGraceTimer = window.setTimeout(() => {
+            cleanup();
+            reject(new Error('Chain Watcher API frame response did not return data. Deploy the Apps Script iframe transport patch.'));
+          }, 2000);
         };
 
         timer = window.setTimeout(() => {
@@ -1320,16 +1340,36 @@
           reject(new Error('Chain Watcher API request timed out.'));
         }, Number.isFinite(timeoutMs) && timeoutMs >= 5000 ? timeoutMs : 30000);
 
-        url.searchParams.set('cwApi', '1');
-        url.searchParams.set('fn', functionName);
-        url.searchParams.set('args', JSON.stringify(args));
-        url.searchParams.set('callback', callbackName);
-        url.searchParams.set('_', String(Date.now()));
+        function addField(name, value) {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = name;
+          input.value = value;
+          form.appendChild(input);
+        }
 
-        script.async = true;
-        script.referrerPolicy = 'no-referrer';
-        script.src = url.toString();
-        document.head.appendChild(script);
+        iframe.name = iframeName;
+        iframe.hidden = true;
+        iframe.style.display = 'none';
+        form.method = 'post';
+        form.action = API_URL;
+        form.target = iframeName;
+        form.acceptCharset = 'UTF-8';
+        form.hidden = true;
+        form.style.display = 'none';
+
+        addField('cwApi', '1');
+        addField('transport', 'frame');
+        addField('requestId', requestId);
+        addField('origin', window.location.origin);
+        addField('fn', functionName);
+        addField('args', JSON.stringify(args));
+        addField('_', String(Date.now()));
+
+        window.addEventListener('message', onMessage);
+        document.body.appendChild(iframe);
+        document.body.appendChild(form);
+        form.submit();
       });
     }
 

@@ -7,10 +7,10 @@
     <meta name="description" content="Unbroken Valkyries Chain Watcher">
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; base-uri 'none'; object-src 'none'; style-src 'self'; script-src 'self' https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none';"
+      content="default-src 'self'; base-uri 'none'; object-src 'none'; style-src 'self'; script-src 'self' https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; img-src 'self' data:; connect-src 'self'; frame-src https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; form-action https://script.google.com; frame-ancestors 'none';"
     >
     <title>Unbroken Valkyries — Chain Watcher</title>
-    <link rel="stylesheet" href="styles.css?v=20260802-identity-fast">
+    <link rel="stylesheet" href="styles.css?v=20260802-frame-post">
   </head>
   <body class="identity-gate-open cw-booting">
     <!-- Static GitHub Pages frontend. No iframe, no redirect. API calls go through config.js + app.js. -->
@@ -399,7 +399,7 @@
     </div>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <div id="loading" class="loading hidden" aria-hidden="true"><div class="spinner"></div><span>Working…</span></div>
-    <script src="config.js?v=20260802-identity-fast"></script>
-    <script src="app.js?v=20260802-identity-fast"></script>
+    <script src="config.js?v=20260802-frame-post"></script>
+    <script src="app.js?v=20260802-frame-post"></script>
   </body>
 </html>
