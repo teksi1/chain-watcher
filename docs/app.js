@@ -1297,13 +1297,11 @@
         const form = document.createElement('form');
         let finished = false;
         let timer = null;
-        let loadGraceTimer = null;
 
         function cleanup() {
           if (finished) return;
           finished = true;
           window.clearTimeout(timer);
-          window.clearTimeout(loadGraceTimer);
           window.removeEventListener('message', onMessage);
           if (form.parentNode) form.parentNode.removeChild(form);
           if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
@@ -1324,15 +1322,6 @@
         iframe.onerror = () => {
           cleanup();
           reject(new Error('Chain Watcher API frame request failed. Check the deployed Apps Script /exec URL and deployment access.'));
-        };
-
-        iframe.onload = () => {
-          if (finished) return;
-          window.clearTimeout(loadGraceTimer);
-          loadGraceTimer = window.setTimeout(() => {
-            cleanup();
-            reject(new Error('Chain Watcher API frame response did not return data. Deploy the Apps Script iframe transport patch.'));
-          }, 2000);
         };
 
         timer = window.setTimeout(() => {
