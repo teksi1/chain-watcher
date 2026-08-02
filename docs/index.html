@@ -22,16 +22,24 @@
           <span>Unbroken Valkyries</span>
         </a>
         <div class="nav-links">
-          <a class="nav-link nav-section-link" href="#overview" target="_self">Overview</a>
           <a class="nav-link nav-section-link" href="#my-schedule-section" target="_self">My schedule</a>
           <a class="nav-link nav-section-link" href="#coverage-section" target="_self">Coverage</a>
-          <a class="nav-link nav-section-link" href="#member-status-section" target="_self">Status now</a>
-          <a class="nav-link nav-section-link" href="#members-section" target="_self">Members</a>
-          <button id="info-open" class="nav-link nav-help" type="button" aria-haspopup="dialog" aria-controls="info-modal"><span aria-hidden="true">?</span>Help</button>
-          <details class="nav-resources nav-war">
-            <summary class="nav-link">WAR <span aria-hidden="true">v</span></summary>
-            <div id="war-report-menu" class="nav-resource-menu">
-              <a href="reports/uv-matchups-vs-the-imperial-hegemon-2026-07-21.html" target="_blank" rel="noopener noreferrer"><strong>vs. The Imperial Hegemon</strong><span>FF matchup report, 21 Jul 2026</span></a>
+          <button id="info-open" class="nav-link nav-help" type="button" aria-haspopup="dialog" aria-controls="info-modal"><span aria-hidden="true">?</span>Guide</button>
+          <details class="nav-resources nav-more">
+            <summary class="nav-link">More <span aria-hidden="true">v</span></summary>
+            <div class="nav-resource-menu">
+              <a href="#member-status-section" target="_self"><strong>Current status</strong><span>Who marked the running slot</span></a>
+              <a href="#members-section" target="_self"><strong>Faction roster</strong><span>Live Torn status and member search</span></a>
+              <a href="#admin-details" target="_self"><strong>Admin settings</strong><span>Event dates, sync and exports</span></a>
+              <hr>
+              <a href="https://www.torn.com/factions.php?step=profile&amp;ID=45151" target="_blank" rel="noopener noreferrer"><strong>Faction page</strong><span>Unbroken Valkyries on Torn</span></a>
+              <a href="https://discord.gg/ufGqn7mYj" target="_blank" rel="noopener noreferrer"><strong>Discord</strong><span>All the fun stuff, banking etc.</span></a>
+              <a href="https://ffscouter.com/guides/war-and-chaining#chaining" target="_blank" rel="noopener noreferrer"><strong>Chaining guide</strong><span>War and chaining basics</span></a>
+              <a href="https://ffscouter.com/target-finder?preset=custom&amp;liveUpdates=0&amp;minLevel=15&amp;maxLevel=100&amp;minFF=1.85&amp;maxFF=2.52&amp;limit=50&amp;inactiveOnly=1&amp;factionless=0" target="_blank" rel="noopener noreferrer"><strong>Target Finder</strong><span>Find suitable inactive targets</span></a>
+              <hr>
+              <div id="war-report-menu" class="nav-report-list">
+                <a href="reports/uv-matchups-vs-the-imperial-hegemon-2026-07-21.html" target="_blank" rel="noopener noreferrer"><strong>vs. The Imperial Hegemon</strong><span>FF matchup report, 21 Jul 2026</span></a>
+              </div>
             </div>
           </details>
           <details class="nav-resources">
@@ -74,13 +82,16 @@
 
         <section id="command-strip" class="command-strip" aria-label="Chain command summary"></section>
 
-        <section id="stats" class="stat-grid" aria-label="Summary"></section>
+        <details class="panel disclosure-panel stats-disclosure">
+          <summary><span>More numbers</span><small>Faction count, online status and latest Torn refresh</small></summary>
+          <section id="stats" class="stat-grid" aria-label="Summary"></section>
+        </details>
 
         <section class="newcomer-guide" aria-labelledby="newcomer-guide-title">
           <div>
-            <div class="eyebrow">START HERE</div>
-            <h2 id="newcomer-guide-title">New to Torn chaining?</h2>
-            <p>Short guide for newer members. Regular users can ignore this and work from the coverage board.</p>
+            <div class="eyebrow">NEED THE BASICS?</div>
+            <h2 id="newcomer-guide-title">Chain guide is in the popup</h2>
+            <p>Keep this page focused: schedule your time, then watch the coverage gaps.</p>
           </div>
           <button id="info-open-guide" class="button button-secondary newcomer-guide-button" type="button" aria-haspopup="dialog" aria-controls="info-modal">Read guide <span>2 min</span></button>
         </section>
@@ -155,12 +166,9 @@
         </section>
 
 
-        <section id="member-status-section" class="panel member-status-panel page-anchor" aria-labelledby="member-status-title">
-          <div class="panel-heading compact">
-            <div>
-              <div class="section-label">CURRENT MEMBER STATUS</div>
-              <h2 id="member-status-title">Who marked what for the current slot</h2>
-            </div>
+        <details id="member-status-section" class="panel disclosure-panel member-status-panel page-anchor" aria-labelledby="member-status-title">
+          <summary><span id="member-status-title">Current slot status</span><small>Open only when you need to inspect individual member marks</small></summary>
+          <div class="disclosure-content">
             <div class="member-status-filters" aria-label="Filter by schedule status">
               <button class="coverage-filter-button" type="button" data-status-filter="all">All</button>
               <button class="coverage-filter-button" type="button" data-status-filter="Online">Online</button>
@@ -169,10 +177,10 @@
               <button class="coverage-filter-button" type="button" data-status-filter="Offline">Offline</button>
               <button class="coverage-filter-button" type="button" data-status-filter="Not set">Not set</button>
             </div>
+            <p class="hint">Shows every active member's saved mark for the currently running time slot.</p>
+            <div id="member-status-list" class="member-status-list"></div>
           </div>
-          <p class="hint">Shows every active member's saved mark for the currently running time slot.</p>
-          <div id="member-status-list" class="member-status-list"></div>
-        </section>
+        </details>
 
         <section class="workspace-grid">
           <aside class="side-stack">
@@ -181,16 +189,13 @@
               <div id="coverage" class="coverage-list"></div>
             </details>
 
-            <article id="members-section" class="panel members-panel page-anchor">
-              <div class="panel-heading compact">
-                <div>
-                  <div class="section-label">3 / MEMBERS</div>
-                  <h2>Faction live status</h2>
-                </div>
+            <details id="members-section" class="panel disclosure-panel members-panel page-anchor">
+              <summary><span>Faction live status</span><small>Roster search and Torn online state</small></summary>
+              <div class="disclosure-content">
                 <input id="member-search" class="search" type="search" placeholder="Search members">
+                <div id="roster" class="roster"></div>
               </div>
-              <div id="roster" class="roster"></div>
-            </article>
+            </details>
           </aside>
         </section>
 
@@ -370,12 +375,12 @@
         </div>
         <div id="identity-key-step" class="identity-step">
           <div class="eyebrow">MEMBER VERIFICATION</div>
-          <h2 id="identity-title">Who are you?</h2>
-          <p>Verify your Torn identity before opening Chain Watcher. Your key is checked once and is never stored in the Sheet or browser.</p>
-          <a id="identity-key-link" class="button button-secondary identity-key-link" href="https://www.torn.com/preferences.php#tab=api?step=addNewKey&amp;title=UnbrokenChain&amp;user=basic" target="_blank" rel="noopener noreferrer">Generate Custom API Key</a>
-          <label for="identity-api-key">Enter Custom API Key</label>
+          <h2 id="identity-title">Verify member access</h2>
+          <p>Use a Torn custom API key to confirm that you are an Unbroken Valkyries member. The key is checked once and never saved.</p>
+          <a id="identity-key-link" class="button button-secondary identity-key-link" href="https://www.torn.com/preferences.php#tab=api?step=addNewKey&amp;title=UnbrokenChain&amp;user=basic" target="_blank" rel="noopener noreferrer">Create Torn API key</a>
+          <label for="identity-api-key">Custom API key</label>
           <div class="identity-key-form">
-            <input id="identity-api-key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste your UnbrokenChain key">
+            <input id="identity-api-key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste key here">
             <button id="identity-verify" class="button button-primary" type="button">Verify identity</button>
           </div>
           <p class="identity-privacy">Only <strong>user → basic</strong> access is required. The app stores a signed member session—not your API key.</p>

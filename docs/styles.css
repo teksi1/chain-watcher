@@ -772,3 +772,415 @@
     .member-status-row { align-items: flex-start; flex-direction: column; gap: 4px; }
     .member-status-name { width: 100%; }
   }
+
+  /* Cleaner Valkyries command room pass. No generated art, just restrained shield-like geometry. */
+  body {
+    background:
+      linear-gradient(180deg, rgba(4, 7, 8, 0.18), rgba(4, 7, 8, 0.72)),
+      radial-gradient(circle at 18% -12%, rgba(198, 154, 82, 0.13), transparent 32rem),
+      radial-gradient(circle at 92% 10%, rgba(143, 200, 214, 0.08), transparent 30rem),
+      #080b0d;
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.18;
+    background:
+      linear-gradient(135deg, transparent 0 48%, rgba(229, 193, 124, 0.14) 49% 50%, transparent 51% 100%),
+      linear-gradient(45deg, transparent 0 49%, rgba(143, 200, 214, 0.08) 50%, transparent 51% 100%),
+      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 72px);
+    background-size: 180px 180px, 180px 180px, 72px 72px;
+  }
+
+  .top-nav {
+    top: 10px;
+    min-height: 54px;
+    padding: 8px 10px;
+    border-color: rgba(198, 154, 82, 0.22);
+    border-left: 3px solid var(--bronze);
+    border-radius: 8px;
+    background: rgba(9, 14, 16, 0.94);
+  }
+
+  .nav-brand {
+    font-family: "Segoe UI", Tahoma, ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.86rem;
+    letter-spacing: 0;
+  }
+
+  .nav-monogram {
+    border-radius: 6px;
+    background: #141c1f;
+  }
+
+  .nav-links {
+    gap: 6px;
+  }
+
+  .nav-links > .nav-resources:not(.nav-more) {
+    display: none;
+  }
+
+  .nav-resource-menu hr {
+    width: 100%;
+    margin: 6px 0;
+    border: 0;
+    border-top: 1px solid rgba(167, 173, 169, 0.14);
+  }
+
+  .nav-report-list {
+    display: grid;
+  }
+
+  .nav-link {
+    min-height: 34px;
+    border-radius: 7px;
+    font-size: 0.72rem;
+  }
+
+  .nav-profile {
+    max-width: 190px;
+  }
+
+  .nav-profile span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .hero {
+    min-height: 116px;
+    padding: 16px 0 18px;
+  }
+
+  .hero .eyebrow {
+    letter-spacing: 0.08em;
+  }
+
+  .hero-actions .button,
+  .sync-pill,
+  .member-session-pill {
+    min-height: 36px;
+    padding-block: 0;
+  }
+
+  .stat-grid {
+    margin-top: 16px;
+  }
+
+  .stats-disclosure {
+    order: 24;
+  }
+
+  .newcomer-guide {
+    display: none;
+  }
+
+  .coverage-calendar-panel {
+    order: 20;
+  }
+
+  .member-status-panel {
+    order: 28;
+  }
+
+  .workspace-grid {
+    order: 30;
+  }
+
+  .disclosure-panel > summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 3px 14px;
+    align-items: center;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .disclosure-panel > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .disclosure-panel > summary::after {
+    content: "Open";
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    min-width: 64px;
+    padding: 7px 10px;
+    border: 1px solid rgba(229, 193, 124, 0.38);
+    border-radius: 7px;
+    color: var(--bronze-light);
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-align: center;
+  }
+
+  .disclosure-panel[open] > summary::after {
+    content: "Close";
+  }
+
+  .disclosure-panel > summary span {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--text);
+    font-family: "Segoe UI", Tahoma, ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.96rem;
+    font-weight: 820;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .disclosure-panel > summary small {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 0.7rem;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .disclosure-content {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(167, 173, 169, 0.14);
+  }
+
+  .member-status-panel .hint {
+    margin: 12px 0 0;
+  }
+
+  .members-panel .search {
+    max-width: min(100%, 320px);
+    margin-bottom: 14px;
+  }
+
+  .members-panel .roster,
+  .member-status-list {
+    max-height: 420px;
+  }
+
+  @media (max-width: 720px) {
+    .top-nav {
+      position: sticky;
+      top: 0;
+      flex-direction: column;
+      align-items: stretch;
+      margin: -16px -16px 0;
+      border-width: 0 0 1px;
+      border-left-width: 0;
+      border-radius: 0;
+    }
+
+    .nav-brand {
+      min-width: 0;
+      padding: 2px 4px 6px;
+    }
+
+    .nav-brand > span:last-child {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+      padding-bottom: 0;
+    }
+
+    .nav-link {
+      justify-content: center;
+      min-width: 0;
+      width: 100%;
+      padding: 0 6px;
+      font-size: 0.67rem;
+    }
+
+    .nav-resources,
+    .nav-resources > summary {
+      min-width: 0;
+      width: 100%;
+    }
+
+    .nav-resource-menu {
+      left: auto;
+      right: 0;
+      width: min(300px, calc(100vw - 32px));
+    }
+
+    .nav-war .nav-resource-menu,
+    .nav-more .nav-resource-menu {
+      left: 0;
+      right: auto;
+    }
+
+    .hero {
+      min-height: 0;
+      padding-top: 18px;
+    }
+
+    .hero-actions {
+      width: 100%;
+    }
+
+    .hero-actions > * {
+      flex: 1 1 150px;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .disclosure-panel > summary {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .disclosure-panel > summary::after {
+      grid-column: 1;
+      grid-row: auto;
+      width: 100%;
+    }
+
+    .disclosure-panel > summary span,
+    .disclosure-panel > summary small {
+      white-space: normal;
+    }
+
+    .stats-disclosure .stat-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Cleaner first impression: replace the meme image with a compact member check card. */
+  body.identity-gate-open .app-shell {
+    filter: blur(5px);
+    opacity: 0.42;
+  }
+
+  .identity-gate {
+    background: rgba(3, 6, 7, 0.78);
+    backdrop-filter: blur(6px);
+  }
+
+  .identity-card {
+    width: min(560px, 100%);
+    display: grid;
+    grid-template-columns: 1fr;
+    border-color: rgba(198, 154, 82, 0.34);
+    border-radius: 10px;
+    background: #101719;
+    box-shadow: 0 28px 72px rgba(0, 0, 0, 0.62);
+  }
+
+  .identity-media {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+    min-height: 94px;
+    padding: 18px 22px;
+    border-bottom: 1px solid rgba(198, 154, 82, 0.2);
+    background:
+      linear-gradient(135deg, rgba(198, 154, 82, 0.14), transparent 62%),
+      #0b1113;
+  }
+
+  .identity-media img {
+    display: none;
+  }
+
+  .identity-media::before {
+    content: "UV";
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(229, 193, 124, 0.5);
+    border-radius: 8px;
+    color: var(--bronze-light);
+    font-size: 0.82rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+  }
+
+  .identity-media::after {
+    content: "Unbroken Valkyries\A member verification";
+    color: var(--text);
+    font-size: 0.96rem;
+    font-weight: 820;
+    line-height: 1.35;
+    white-space: pre-line;
+  }
+
+  .identity-step {
+    padding: 24px 26px 26px;
+  }
+
+  .identity-step h2 {
+    margin-bottom: 8px;
+    font-family: "Segoe UI", Tahoma, ui-sans-serif, system-ui, sans-serif;
+    font-size: clamp(1.45rem, 5vw, 1.85rem);
+    letter-spacing: 0;
+  }
+
+  .identity-step > p {
+    margin-bottom: 16px;
+    font-size: 0.84rem;
+  }
+
+  .identity-key-link {
+    width: 100%;
+    min-height: 42px;
+    margin-bottom: 16px;
+  }
+
+  .identity-key-form {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: stretch;
+  }
+
+  .identity-key-form input {
+    min-width: 0;
+  }
+
+  .identity-privacy {
+    padding-top: 12px;
+    border-top: 1px solid rgba(167, 173, 169, 0.12);
+  }
+
+  .identity-error {
+    grid-column: 1;
+    margin: -8px 26px 24px;
+  }
+
+  @media (max-width: 520px) {
+    .identity-gate {
+      padding: 12px;
+      place-items: start center;
+    }
+
+    .identity-media {
+      min-height: 82px;
+      padding: 14px 16px;
+    }
+
+    .identity-step {
+      padding: 20px 16px 18px;
+    }
+
+    .identity-key-form {
+      grid-template-columns: 1fr;
+    }
+
+    .identity-key-form .button {
+      width: 100%;
+    }
+
+    .identity-error {
+      margin: -4px 16px 18px;
+    }
+  }
