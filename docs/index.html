@@ -10,9 +10,9 @@
       content="default-src 'self'; base-uri 'none'; object-src 'none'; style-src 'self'; script-src 'self' https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; img-src 'self' data:; connect-src 'self'; frame-src https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; form-action https://script.google.com; frame-ancestors 'none';"
     >
     <title>Unbroken Valkyries — Chain Watcher</title>
-    <link rel="stylesheet" href="styles.css?v=20260802-frame-post-2">
+    <link rel="stylesheet" href="styles.css?v=20260803-workspace-tabs">
   </head>
-  <body class="identity-gate-open cw-booting">
+  <body class="identity-gate-open cw-booting" data-active-view="plan">
     <!-- Static GitHub Pages frontend. No iframe, no redirect. API calls go through config.js + app.js. -->
 
     <div id="app" class="app-shell">
@@ -81,6 +81,21 @@
         <section id="notice" class="notice hidden" aria-live="polite"></section>
 
         <section id="command-strip" class="command-strip" aria-label="Chain command summary"></section>
+
+        <nav class="view-tabs" aria-label="Main workspace">
+          <button class="view-tab active" type="button" data-view-tab="plan" aria-selected="true">
+            <span>My plan</span>
+            <small>Set when you are available</small>
+          </button>
+          <button class="view-tab" type="button" data-view-tab="team" aria-selected="false">
+            <span>Team coverage</span>
+            <small>Find weak time slots</small>
+          </button>
+          <button class="view-tab" type="button" data-view-tab="details" aria-selected="false">
+            <span>Details</span>
+            <small>Roster, logs and admin</small>
+          </button>
+        </nav>
 
         <details class="panel disclosure-panel stats-disclosure">
           <summary><span>More numbers</span><small>Faction count, online status and latest Torn refresh</small></summary>
@@ -399,7 +414,7 @@
     </div>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <div id="loading" class="loading hidden" aria-hidden="true"><div class="spinner"></div><span>Working…</span></div>
-    <script src="config.js?v=20260802-frame-post-2"></script>
-    <script src="app.js?v=20260802-frame-post-2"></script>
+    <script src="config.js?v=20260803-workspace-tabs"></script>
+    <script src="app.js?v=20260803-workspace-tabs"></script>
   </body>
 </html>

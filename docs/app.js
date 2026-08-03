@@ -9,9 +9,12 @@
     const LOCAL_TIME_ZONE = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local time';
     const SESSION_STORAGE_KEY = 'chainWatcherMemberSession';
     const SESSION_BACKUP_KEY = 'chainWatcherMemberSessionBackup';
+    const VIEW_STORAGE_KEY = 'chainWatcherActiveView';
+    const WORKSPACE_VIEWS = new Set(['plan', 'team', 'details']);
     const state = {
       data: null,
       sessionToken: readSessionToken(),
+      activeView: readPreferredView(),
       pendingConfirmationToken: '',
       pendingMember: null,
       selectedMemberId: '',
@@ -52,6 +55,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       document.body.classList.add('cw-js-ready');
+      setActiveView(state.activeView, { persist: false, scroll: false });
       loadWarReports();
       bindEvents();
       bindLayoutPublisher();
@@ -120,6 +124,12 @@
       });
 
       document.addEventListener('click', (event) => {
+        const viewTab = event.target.closest('[data-view-tab]');
+        if (viewTab) {
+          setActiveView(viewTab.dataset.viewTab || 'plan');
+          return;
+        }
+
         const filterButton = event.target.closest('[data-coverage-filter]');
         if (filterButton) {
           state.coverageFilter = filterButton.dataset.coverageFilter || 'future';
@@ -141,6 +151,7 @@
         if (commandButton.dataset.commandAction === 'current') jumpToCurrentSlot();
         if (commandButton.dataset.commandAction === 'next-gap') jumpToNextGap();
         if (commandButton.dataset.commandAction === 'coverage') focusCoverageBoard();
+        if (commandButton.dataset.commandAction === 'plan') focusSchedulePanel();
       });
       }
 
@@ -254,6 +265,25 @@
       document.body.classList.toggle('cw-unauthenticated', !authenticated);
     }
 
+    function setActiveView(view, options = {}) {
+      const nextView = WORKSPACE_VIEWS.has(view) ? view : 'plan';
+      state.activeView = nextView;
+      document.body.dataset.activeView = nextView;
+      document.querySelectorAll('[data-view-tab]').forEach((button) => {
+        const active = button.dataset.viewTab === nextView;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+      if (options.persist !== false) {
+        try { localStorage.setItem(VIEW_STORAGE_KEY, nextView); } catch (ignore) {}
+      }
+      if (options.scroll !== false) {
+        const tabs = document.querySelector('.view-tabs');
+        if (tabs) tabs.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      scheduleLayoutPublish();
+    }
+
     function bindInternalNavigation() {
       document.querySelectorAll('a.nav-brand[href^="#"], a.nav-section-link[href^="#"]').forEach((link) => {
         link.setAttribute('target', '_self');
@@ -262,6 +292,11 @@
           const selector = link.getAttribute('href');
           const target = getHashTarget(selector);
           if (!target) return;
+          const view = target.closest('.schedule-panel, .my-bookings') ? 'plan'
+            : target.closest('.coverage-calendar-panel, .member-status-panel') ? 'team'
+              : target.closest('.stats-disclosure, .workspace-grid, .admin-panel') ? 'details'
+                : null;
+          if (view) setActiveView(view, { scroll: false });
           target.scrollIntoView({ behavior: 'smooth', block: 'start' });
           try {
             window.history.replaceState(null, '', selector);
@@ -276,6 +311,11 @@
       if (!target) return;
       state.initialHashScrolled = true;
       window.setTimeout(() => {
+        const view = target.closest('.schedule-panel, .my-bookings') ? 'plan'
+          : target.closest('.coverage-calendar-panel, .member-status-panel') ? 'team'
+            : target.closest('.stats-disclosure, .workspace-grid, .admin-panel') ? 'details'
+              : null;
+        if (view) setActiveView(view, { scroll: false });
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 300);
     }
@@ -423,7 +463,7 @@
           <strong>${uncoveredFuture}</strong>
           <small>${thinFuture} thin slots</small>
         </button>
-        <button class="command-card" type="button" data-command-action="coverage">
+        <button class="command-card" type="button" data-command-action="plan">
           <span>My saved time</span>
           <strong>${escapeHtml(formatDuration(savedMinutes))}</strong>
           <small>${savedSlots} saved slot${savedSlots === 1 ? '' : 's'}</small>
@@ -463,7 +503,7 @@
       const step = state.data.meta.slotMinutes * 60000;
       const locked = !(state.data.auth && state.data.auth.authenticated);
       $('schedule').innerHTML = groups.map((group) => `
-        <section class="day-card">
+        <section class="day-card schedule-table-card">
           <header class="day-header">
             <div class="day-title">${escapeHtml(formatDay(group.day))}</div>
             <div class="bulk-actions">
@@ -471,22 +511,41 @@
               <button class="bulk-button" type="button" data-day="${escapeAttr(group.day)}" data-bulk-status="" ${locked ? 'disabled' : ''}>Clear day</button>
             </div>
           </header>
+          <div class="schedule-table-wrap">
+            <table class="schedule-table">
+              <thead>
+                <tr>
+                  <th scope="col">TCT</th>
+                  <th scope="col">Your local time</th>
+                  <th scope="col">Online</th>
+                  <th scope="col">Watching</th>
+                  <th scope="col">DUMP</th>
+                  <th scope="col">Offline</th>
+                </tr>
+              </thead>
+              <tbody>
           ${group.slots.map((slot) => {
             const status = state.schedule[slot.iso] || '';
             const start = Date.parse(slot.iso);
             const current = start <= now && now < start + step;
             return `
-            <div class="slot-row ${current ? 'current' : ''}" data-schedule-slot="${escapeAttr(slot.iso)}">
-                <div class="slot-times">
-                  <time class="slot-time" datetime="${escapeAttr(slot.iso)}">${escapeHtml(formatTime(slot.iso))} <small>TCT</small></time>
-                  <span class="slot-local">${escapeHtml(formatLocalSlot(slot.iso))} <small>Your local</small></span>
-                </div>
-                <div class="status-control" role="group" aria-label="TCT ${escapeAttr(formatDateTime(slot.iso))}; local ${escapeAttr(formatLocalDateTime(slot.iso))}">
-                  ${STATUS_OPTIONS.map((option) => `<button type="button" class="status-button ${option.toLowerCase()} ${status === option ? 'active' : ''}" data-slot="${escapeAttr(slot.iso)}" data-status="${option}" ${locked ? 'disabled' : ''}>${option}</button>`).join('')}
-                </div>
-              </div>
+                <tr class="slot-row ${current ? 'current' : ''}" data-schedule-slot="${escapeAttr(slot.iso)}">
+                  <th scope="row" class="slot-time-cell">
+                    <time class="slot-time" datetime="${escapeAttr(slot.iso)}">${escapeHtml(formatTime(slot.iso))}</time>
+                    ${current ? '<span class="current-chip">Now</span>' : ''}
+                  </th>
+                  <td class="slot-local-cell">${escapeHtml(formatLocalSlot(slot.iso))}</td>
+                  ${STATUS_OPTIONS.map((option) => `
+                    <td class="status-cell ${option.toLowerCase()}">
+                      <button type="button" class="status-button ${option.toLowerCase()} ${status === option ? 'active' : ''}" data-slot="${escapeAttr(slot.iso)}" data-status="${option}" ${locked ? 'disabled' : ''} aria-label="${escapeAttr(option)} for ${escapeAttr(formatDateTime(slot.iso))} TCT">${option}</button>
+                    </td>
+                  `).join('')}
+                </tr>
             `;
           }).join('')}
+              </tbody>
+            </table>
+          </div>
         </section>
       `).join('');
 
@@ -549,6 +608,7 @@
     }
 
     function focusSchedulePanel() {
+      setActiveView('plan', { scroll: false });
       const panel = document.querySelector('.schedule-panel');
       if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -657,6 +717,7 @@
     }
 
     function focusCoverageBoard() {
+      setActiveView('team', { scroll: false });
       const panel = $('coverage-section');
       if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -673,6 +734,7 @@
     }
 
     function focusScheduleSlot(slotIso) {
+      setActiveView('plan', { scroll: false });
       const row = [...document.querySelectorAll('[data-schedule-slot]')]
         .find((item) => item.dataset.scheduleSlot === slotIso);
       if (!row) return;
@@ -835,6 +897,14 @@
       const prefix = `${SESSION_STORAGE_KEY}=`;
       const cookie = document.cookie.split(';').map((part) => part.trim()).find((part) => part.startsWith(prefix));
       return cookie ? decodeURIComponent(cookie.slice(prefix.length)) : '';
+    }
+
+    function readPreferredView() {
+      try {
+        const stored = localStorage.getItem(VIEW_STORAGE_KEY);
+        if (WORKSPACE_VIEWS.has(stored)) return stored;
+      } catch (ignore) {}
+      return 'plan';
     }
 
     function rememberSession(token) {

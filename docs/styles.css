@@ -978,6 +978,161 @@
     max-height: 420px;
   }
 
+  /* Workspace split: users should see one job at a time, not one long pile. */
+  .view-tabs {
+    position: sticky;
+    top: 82px;
+    z-index: 12;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    padding: 8px;
+    border: 1px solid rgba(198, 154, 82, 0.24);
+    border-radius: 8px;
+    background: rgba(8, 13, 15, 0.94);
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(14px);
+  }
+
+  .view-tab {
+    display: grid;
+    gap: 2px;
+    min-height: 52px;
+    padding: 8px 10px;
+    border: 1px solid rgba(167, 173, 169, 0.14);
+    border-radius: 7px;
+    background: #101719;
+    color: var(--muted);
+    text-align: left;
+  }
+
+  .view-tab:hover,
+  .view-tab.active {
+    border-color: rgba(229, 193, 124, 0.5);
+    background: rgba(198, 154, 82, 0.12);
+    color: var(--bronze-light);
+  }
+
+  .view-tab span {
+    color: var(--text);
+    font-size: 0.78rem;
+    font-weight: 860;
+  }
+
+  .view-tab small {
+    overflow: hidden;
+    font-size: 0.64rem;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  body[data-active-view="plan"] .coverage-calendar-panel,
+  body[data-active-view="plan"] .member-status-panel,
+  body[data-active-view="plan"] .stats-disclosure,
+  body[data-active-view="plan"] .newcomer-guide,
+  body[data-active-view="plan"] .workspace-grid,
+  body[data-active-view="plan"] .admin-panel,
+  body[data-active-view="team"] .my-bookings,
+  body[data-active-view="team"] .schedule-panel,
+  body[data-active-view="team"] .stats-disclosure,
+  body[data-active-view="team"] .newcomer-guide,
+  body[data-active-view="team"] .workspace-grid,
+  body[data-active-view="team"] .admin-panel,
+  body[data-active-view="details"] .my-bookings,
+  body[data-active-view="details"] .schedule-panel,
+  body[data-active-view="details"] .coverage-calendar-panel,
+  body[data-active-view="details"] .member-status-panel {
+    display: none;
+  }
+
+  body[data-active-view="details"] .newcomer-guide {
+    display: grid;
+  }
+
+  .schedule-table-wrap {
+    overflow-x: auto;
+    scrollbar-color: #334155 transparent;
+  }
+
+  .schedule-table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .schedule-table th,
+  .schedule-table td {
+    padding: 7px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    vertical-align: middle;
+  }
+
+  .schedule-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #151c1f;
+    color: var(--muted);
+    font-size: 0.64rem;
+    font-weight: 850;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  .schedule-table thead th:nth-child(n+3) {
+    text-align: center;
+  }
+
+  .schedule-table .slot-row {
+    display: table-row;
+    padding: 0;
+    border-bottom: 0;
+  }
+
+  .schedule-table .slot-row.current {
+    background: rgba(143, 200, 214, 0.08);
+    box-shadow: inset 3px 0 var(--ice);
+  }
+
+  .slot-time-cell {
+    width: 104px;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .slot-local-cell {
+    width: 156px;
+    color: var(--ice);
+    font-size: 0.72rem;
+    font-weight: 760;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .current-chip {
+    display: inline-flex;
+    margin-left: 6px;
+    padding: 2px 5px;
+    border: 1px solid rgba(143, 200, 214, 0.44);
+    border-radius: 999px;
+    color: var(--ice);
+    font-size: 0.55rem;
+    font-weight: 850;
+    text-transform: uppercase;
+  }
+
+  .status-cell {
+    width: 124px;
+  }
+
+  .status-cell .status-button {
+    width: 100%;
+    min-height: 32px;
+  }
+
   @media (max-width: 720px) {
     .top-nav {
       position: sticky;
@@ -1066,6 +1221,32 @@
 
     .stats-disclosure .stat-grid {
       grid-template-columns: 1fr;
+    }
+
+    .view-tabs {
+      top: 0;
+      grid-template-columns: 1fr;
+      margin: 0 -16px;
+      border-right: 0;
+      border-left: 0;
+      border-radius: 0;
+    }
+
+    .view-tab {
+      min-height: 44px;
+    }
+
+    .schedule-table {
+      min-width: 690px;
+    }
+
+    .schedule-table th,
+    .schedule-table td {
+      padding: 6px;
+    }
+
+    .status-cell {
+      width: 106px;
     }
   }
 
