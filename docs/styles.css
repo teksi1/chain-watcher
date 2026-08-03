@@ -70,8 +70,9 @@
   main { display: grid; gap: 20px; }
 
   .top-nav { position: sticky; top: 12px; z-index: 15; display: flex; justify-content: space-between; align-items: center; gap: 18px; min-height: 58px; padding: 9px 12px 9px 15px; border: 1px solid rgba(198, 154, 82, 0.3); border-radius: 7px 18px; background: rgba(12, 18, 21, 0.9); box-shadow: 0 14px 34px rgba(0, 0, 0, 0.34); backdrop-filter: blur(16px); }
-  .nav-brand { display: inline-flex; align-items: center; gap: 10px; min-width: max-content; color: var(--bronze-light); font-family: Georgia, "Times New Roman", serif; font-size: 0.92rem; font-weight: 800; text-decoration: none; }
-  .nav-monogram { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid rgba(198, 154, 82, 0.48); border-radius: 4px 11px; background: linear-gradient(145deg, rgba(198, 154, 82, 0.2), rgba(143, 200, 214, 0.06)); color: var(--text); font-family: "Segoe UI", sans-serif; font-size: 0.68rem; letter-spacing: 0.08em; }
+  .nav-brand { display: inline-flex; align-items: center; min-width: max-content; color: var(--bronze-light); text-decoration: none; }
+  .nav-monogram { display: grid; place-items: center; width: 40px; height: 40px; overflow: hidden; border: 1px solid rgba(198, 154, 82, 0.5); border-radius: 6px 12px; background: #151c1f; box-shadow: 0 0 16px rgba(198, 154, 82, 0.12); }
+  .nav-monogram img { display: block; width: 100%; height: 100%; object-fit: cover; }
   .nav-links { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 5px; min-width: 0; }
   .nav-link { display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 10px; border: 1px solid transparent; border-radius: 4px 10px; color: var(--muted); font-size: 0.73rem; font-weight: 760; text-decoration: none; white-space: nowrap; transition: color 120ms ease, border-color 120ms ease, background 120ms ease, transform 120ms ease; }
   .nav-link:hover { transform: translateY(-1px); border-color: var(--line); background: rgba(198, 154, 82, 0.08); color: var(--bronze-light); }
@@ -211,14 +212,14 @@
     display: grid;
     place-items: center;
     width: 74px;
-    height: 84px;
-    color: var(--bronze-light);
-    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.52));
+    height: 74px;
+    overflow: hidden;
+    border: 1px solid rgba(229, 193, 124, 0.28);
+    border-radius: 10px 18px;
+    background: #151c1f;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.34);
   }
-  .valkyrie-mark svg { width: 100%; height: 100%; overflow: visible; }
-  .mark-shield { fill: rgba(198, 154, 82, 0.08); stroke: var(--bronze); stroke-width: 2.4; }
-  .mark-wing, .mark-rune { fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: square; stroke-linejoin: bevel; }
-  .mark-rune { stroke-width: 3; }
+  .valkyrie-mark img { display: block; width: 100%; height: 100%; object-fit: cover; }
 
   h1, h2, h3, p { margin-top: 0; }
   h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; }
@@ -670,7 +671,7 @@
   }
 
   .hero-brand { grid-template-columns: 56px minmax(0, 1fr); gap: 14px; }
-  .valkyrie-mark { width: 56px; height: 64px; filter: none; }
+  .valkyrie-mark { width: 58px; height: 58px; box-shadow: none; }
   h1 { margin-bottom: 5px; font-size: clamp(1.85rem, 3.4vw, 2.65rem); letter-spacing: -0.02em; }
   .hero-subtitle { font-size: 0.82rem; }
   .hero-subtitle .faction-line { font-size: 0.94rem; }
@@ -838,7 +839,7 @@
     .members-panel .roster { grid-template-columns: 1fr; }
     .hero { align-items: flex-start; flex-direction: column; padding-top: 15px; }
     .hero-brand { grid-template-columns: 54px minmax(0, 1fr); gap: 13px; }
-    .valkyrie-mark { width: 54px; height: 64px; }
+    .valkyrie-mark { width: 54px; height: 54px; }
     .hero-actions { justify-content: flex-start; }
     .command-strip { grid-template-columns: 1fr; }
     .coverage-jump-button { margin-left: 0; width: 100%; }
@@ -870,7 +871,7 @@
 
   @media (max-width: 420px) {
     .hero-brand { grid-template-columns: 1fr; }
-    .valkyrie-mark { width: 48px; height: 56px; }
+    .valkyrie-mark { width: 48px; height: 48px; }
     .stat-grid { grid-template-columns: 1fr; }
     .sticky-save { align-items: stretch; flex-direction: column; }
     .sticky-save .button { width: 100%; }
@@ -959,7 +960,9 @@
   }
 
   .nav-monogram {
-    border-radius: 6px;
+    width: 42px;
+    height: 42px;
+    border-radius: 7px 13px;
     background: #141c1f;
   }
 
@@ -1285,7 +1288,7 @@
       padding: 2px 4px 6px;
     }
 
-    .nav-brand > span:last-child {
+    .nav-brand > span:not(.nav-monogram):last-child {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;

@@ -10,7 +10,9 @@
       content="default-src 'self'; base-uri 'none'; object-src 'none'; style-src 'self'; script-src 'self' https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; img-src 'self' data:; connect-src 'self'; frame-src https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; form-action https://script.google.com; frame-ancestors 'none';"
     >
     <title>Unbroken Valkyries — Chain Watcher</title>
-    <link rel="stylesheet" href="styles.css?v=20260803-guide-nudge-arrow">
+    <link rel="icon" type="image/png" sizes="64x64" href="assets/uv-favicon.png?v=20260803-uv-logo">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/uv-apple-touch.png?v=20260803-uv-logo">
+    <link rel="stylesheet" href="styles.css?v=20260803-uv-logo">
   </head>
   <body class="identity-gate-open cw-booting" data-active-view="plan">
     <!-- Static GitHub Pages frontend. No iframe, no redirect. API calls go through config.js + app.js. -->
@@ -18,8 +20,7 @@
     <div id="app" class="app-shell">
       <nav class="top-nav" aria-label="Primary navigation">
         <a class="nav-brand" href="#overview" target="_self" aria-label="Unbroken Valkyries — back to overview">
-          <span class="nav-monogram" aria-hidden="true">UV</span>
-          <span>Unbroken Valkyries</span>
+          <span class="nav-monogram" aria-hidden="true"><img src="assets/uv-logo.png?v=20260803-uv-logo" alt=""></span>
         </a>
         <div class="nav-links">
           <a class="nav-link nav-section-link" href="#my-schedule-section" target="_self">My schedule</a>
@@ -68,11 +69,7 @@
       <header id="overview" class="hero page-anchor">
         <div class="hero-brand">
           <div class="valkyrie-mark" aria-hidden="true">
-            <svg viewBox="0 0 88 100" role="img">
-              <path class="mark-shield" d="M44 4 78 17v29c0 23-13 39-34 50C23 85 10 69 10 46V17L44 4Z"/>
-              <path class="mark-wing" d="M41 29 27 18l4 16-13-6 12 17-10 2 18 16M47 29l14-11-4 16 13-6-12 17 10 2-18 16"/>
-              <path class="mark-rune" d="M34 32 44 70l10-38M38 50h12"/>
-            </svg>
+            <img src="assets/uv-logo.png?v=20260803-uv-logo" alt="">
           </div>
           <div class="hero-copy">
             <div class="eyebrow rune-label">UNBROKEN VALKYRIES <span>•</span> CHAIN WEEKENDS</div>
@@ -416,7 +413,7 @@
     </div>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <div id="loading" class="loading hidden" aria-hidden="true"><div class="spinner"></div><span>Working…</span></div>
-    <script src="config.js?v=20260803-guide-nudge-arrow"></script>
-    <script src="app.js?v=20260803-guide-nudge-arrow"></script>
+    <script src="config.js?v=20260803-uv-logo"></script>
+    <script src="app.js?v=20260803-uv-logo"></script>
   </body>
 </html>
