@@ -100,53 +100,32 @@
   .guide-nudge-arrow {
     position: absolute;
     left: var(--guide-arrow-x, 50%);
-    top: -34px;
-    width: 34px;
-    height: 38px;
-    margin-left: -17px;
+    top: -55px;
+    z-index: 2;
+    width: 56px;
+    height: 58px;
+    margin-left: -28px;
+    overflow: visible;
+    color: var(--bronze-light);
     pointer-events: none;
-  }
-  .guide-nudge-arrow::before {
-    content: "";
-    position: absolute;
-    left: 15px;
-    top: 11px;
-    width: 3px;
-    height: 31px;
-    border-radius: 999px;
-    background: var(--bronze-light);
-    box-shadow: 0 0 14px rgba(229, 193, 124, 0.55);
-    transform: rotate(17deg);
-    transform-origin: bottom center;
-  }
-  .guide-nudge-arrow::after {
-    content: "";
-    position: absolute;
-    left: 8px;
-    top: 2px;
-    width: 0;
-    height: 0;
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
-    border-bottom: 12px solid var(--bronze-light);
+    transform: rotate(8deg);
+    transform-origin: 50% 100%;
     filter: drop-shadow(0 0 8px rgba(229, 193, 124, 0.5));
-    transform: rotate(17deg);
-    transform-origin: center bottom;
   }
-  .guide-nudge-card::before {
-    content: "";
-    position: absolute;
-    left: calc(var(--guide-arrow-x, 50%) - 4px);
-    top: -4px;
-    width: 8px;
-    height: 8px;
-    transform: rotate(45deg);
-    border-left: 1px solid rgba(229, 193, 124, 0.54);
-    border-top: 1px solid rgba(229, 193, 124, 0.54);
-    background: rgba(15, 22, 24, 0.98);
+  .guide-nudge-arrow-line {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 3.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+  .guide-nudge-arrow-head {
+    fill: currentColor;
   }
   .guide-nudge-card {
     position: relative;
+    z-index: 1;
     pointer-events: auto;
     display: grid;
     grid-template-columns: minmax(0, 1fr) 24px;

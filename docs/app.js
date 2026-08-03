@@ -10,7 +10,7 @@
     const SESSION_STORAGE_KEY = 'chainWatcherMemberSession';
     const SESSION_BACKUP_KEY = 'chainWatcherMemberSessionBackup';
     const VIEW_STORAGE_KEY = 'chainWatcherActiveView';
-    const GUIDE_NUDGE_STORAGE_KEY = 'chainWatcherGuideNudgeSeenV2';
+    const GUIDE_NUDGE_STORAGE_KEY = 'chainWatcherGuideNudgeSeenV3';
     const WORKSPACE_VIEWS = new Set(['plan', 'team', 'details']);
     const state = {
       data: null,
@@ -306,7 +306,7 @@
       const minLeft = 14;
       const maxLeft = Math.max(minLeft, viewportWidth - width - 14);
       const left = Math.min(maxLeft, Math.max(minLeft, targetX - (width / 2)));
-      const top = Math.max(74, guideRect.bottom + 30);
+      const top = Math.max(86, guideRect.bottom + 46);
       const arrowX = Math.min(width - 24, Math.max(24, targetX - left));
       nudge.style.left = `${Math.round(left)}px`;
       nudge.style.top = `${Math.round(top)}px`;

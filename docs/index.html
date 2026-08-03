@@ -10,7 +10,7 @@
       content="default-src 'self'; base-uri 'none'; object-src 'none'; style-src 'self'; script-src 'self' https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; img-src 'self' data:; connect-src 'self'; frame-src https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; form-action https://script.google.com; frame-ancestors 'none';"
     >
     <title>Unbroken Valkyries — Chain Watcher</title>
-    <link rel="stylesheet" href="styles.css?v=20260803-guide-nudge-align">
+    <link rel="stylesheet" href="styles.css?v=20260803-guide-nudge-arrow">
   </head>
   <body class="identity-gate-open cw-booting" data-active-view="plan">
     <!-- Static GitHub Pages frontend. No iframe, no redirect. API calls go through config.js + app.js. -->
@@ -55,7 +55,10 @@
         </div>
       </nav>
       <div id="guide-nudge" class="guide-nudge hidden" role="status" aria-live="polite">
-        <div class="guide-nudge-arrow" aria-hidden="true"></div>
+        <svg class="guide-nudge-arrow" viewBox="0 0 56 58" aria-hidden="true" focusable="false">
+          <path class="guide-nudge-arrow-line" d="M28 56 C23 39 28 22 28 10"></path>
+          <path class="guide-nudge-arrow-head" d="M28 2 L19 15 L28 10 L37 15 Z"></path>
+        </svg>
         <div class="guide-nudge-card">
           <strong>New here?</strong>
           <span>You may want to see how this page works.</span>
@@ -413,7 +416,7 @@
     </div>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <div id="loading" class="loading hidden" aria-hidden="true"><div class="spinner"></div><span>Working…</span></div>
-    <script src="config.js?v=20260803-guide-nudge-align"></script>
-    <script src="app.js?v=20260803-guide-nudge-align"></script>
+    <script src="config.js?v=20260803-guide-nudge-arrow"></script>
+    <script src="app.js?v=20260803-guide-nudge-arrow"></script>
   </body>
 </html>
