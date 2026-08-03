@@ -223,12 +223,10 @@
   h1 { margin-bottom: 8px; color: var(--bronze-light); font-size: clamp(2rem, 5vw, 3.75rem); line-height: 0.98; letter-spacing: -0.035em; text-shadow: 0 2px 20px rgba(198, 154, 82, 0.18); }
   h2 { margin-bottom: 0; color: #f2ead8; font-size: 1.23rem; letter-spacing: 0.005em; }
   .eyebrow { margin-bottom: 8px; color: var(--bronze); font-size: 0.69rem; font-weight: 850; letter-spacing: 0.17em; }
-  .rune-label span { color: var(--ice); }
   .section-kicker { display: flex; align-items: center; gap: 7px; }
   .section-icon { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: square; stroke-linejoin: bevel; }
   .hero-subtitle { display: grid; gap: 3px; margin-bottom: 0; color: var(--muted); font-size: 0.92rem; }
   .hero-subtitle strong { color: var(--text); }
-  .hero-subtitle .faction-line { margin-bottom: 3px; color: var(--text); font-size: 1.04rem; font-weight: 750; }
   .hero-subtitle .local-time-line { color: var(--ice); }
   .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: flex-end; }
 
@@ -671,7 +669,6 @@
   .valkyrie-mark { width: 96px; height: 74px; filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.34)); }
   h1 { margin-bottom: 5px; font-size: clamp(1.85rem, 3.4vw, 2.65rem); letter-spacing: -0.02em; }
   .hero-subtitle { font-size: 0.82rem; }
-  .hero-subtitle .faction-line { font-size: 0.94rem; }
 
   .command-strip {
     display: grid;

@@ -471,7 +471,6 @@
       const { meta } = state.data;
       $('app-title').textContent = meta.appName || 'Chain Watcher';
       $('event-title').innerHTML = `
-        <span class="faction-line">${escapeHtml(meta.factionName)}</span>
         <span><strong>TCT:</strong> ${escapeHtml(formatRange(meta.start, meta.end))}</span>
         <span class="local-time-line"><strong>Your local time (${escapeHtml(LOCAL_TIME_ZONE)}):</strong> ${escapeHtml(formatLocalRange(meta.start, meta.end))}</span>
       `;
