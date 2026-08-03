@@ -316,11 +316,53 @@
 
   .legend { display: flex; flex-wrap: wrap; gap: 15px; padding: 0 22px 18px; color: var(--muted); font-size: 0.77rem; }
   .legend-item { display: inline-flex; gap: 7px; align-items: center; }
-  .dot { width: 9px; height: 9px; border-radius: 50%; }
-  .dot.online { background: var(--green); box-shadow: 0 0 14px rgba(54, 211, 153, 0.7); }
-  .dot.watching { background: var(--amber); }
-  .dot.dump { background: var(--violet); box-shadow: 0 0 12px rgba(185, 154, 232, 0.52); }
-  .dot.offline { background: var(--red); }
+  .dot { position: relative; flex: 0 0 auto; width: 9px; height: 9px; border-radius: 50%; }
+  .dot::after { content: ""; position: absolute; inset: -5px; border-radius: inherit; opacity: 0.42; background: currentColor; filter: blur(6px); }
+  .dot.online { color: var(--green); background: var(--green); box-shadow: 0 0 14px rgba(114, 201, 157, 0.78); }
+  .dot.watching { color: var(--amber); background: var(--amber); box-shadow: 0 0 13px rgba(215, 167, 85, 0.7); }
+  .dot.dump { color: var(--violet); background: var(--violet); box-shadow: 0 0 13px rgba(185, 154, 232, 0.7); }
+  .dot.offline { color: var(--red); background: var(--red); box-shadow: 0 0 12px rgba(207, 115, 115, 0.68); }
+
+  .schedule-status-guide {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin: 0 22px 18px;
+  }
+
+  .status-guide-item {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 2px 8px;
+    align-items: start;
+    min-height: 76px;
+    padding: 10px;
+    border: 1px solid rgba(167, 173, 169, 0.14);
+    border-radius: 7px;
+    background: rgba(8, 13, 15, 0.42);
+  }
+
+  .status-guide-item .dot {
+    margin-top: 4px;
+  }
+
+  .status-guide-item strong {
+    color: var(--text);
+    font-size: 0.74rem;
+    font-weight: 860;
+  }
+
+  .status-guide-item span {
+    grid-column: 2;
+    color: var(--muted);
+    font-size: 0.68rem;
+    line-height: 1.35;
+  }
+
+  .status-guide-item.online { border-color: rgba(114, 201, 157, 0.22); background: rgba(114, 201, 157, 0.055); }
+  .status-guide-item.watching { border-color: rgba(215, 167, 85, 0.24); background: rgba(215, 167, 85, 0.055); }
+  .status-guide-item.dump { border-color: rgba(185, 154, 232, 0.24); background: rgba(185, 154, 232, 0.055); }
+  .status-guide-item.offline { border-color: rgba(207, 115, 115, 0.22); background: rgba(207, 115, 115, 0.05); }
 
   .schedule { display: grid; gap: 14px; padding: 0 22px 22px; }
   .day-card { overflow: hidden; border: 1px solid var(--line); border-radius: 4px 13px; background: rgba(7, 11, 13, 0.55); }
@@ -1030,13 +1072,11 @@
   body[data-active-view="plan"] .coverage-calendar-panel,
   body[data-active-view="plan"] .member-status-panel,
   body[data-active-view="plan"] .stats-disclosure,
-  body[data-active-view="plan"] .newcomer-guide,
   body[data-active-view="plan"] .workspace-grid,
   body[data-active-view="plan"] .admin-panel,
   body[data-active-view="team"] .my-bookings,
   body[data-active-view="team"] .schedule-panel,
   body[data-active-view="team"] .stats-disclosure,
-  body[data-active-view="team"] .newcomer-guide,
   body[data-active-view="team"] .workspace-grid,
   body[data-active-view="team"] .admin-panel,
   body[data-active-view="details"] .my-bookings,
@@ -1044,10 +1084,6 @@
   body[data-active-view="details"] .coverage-calendar-panel,
   body[data-active-view="details"] .member-status-panel {
     display: none;
-  }
-
-  body[data-active-view="details"] .newcomer-guide {
-    display: grid;
   }
 
   .schedule-table-wrap {
@@ -1202,6 +1238,15 @@
       flex: 1 1 150px;
       justify-content: center;
       text-align: center;
+    }
+
+    .schedule-status-guide {
+      grid-template-columns: 1fr;
+      margin-inline: 16px;
+    }
+
+    .status-guide-item {
+      min-height: 0;
     }
 
     .disclosure-panel > summary {

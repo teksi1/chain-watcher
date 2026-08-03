@@ -10,7 +10,7 @@
       content="default-src 'self'; base-uri 'none'; object-src 'none'; style-src 'self'; script-src 'self' https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; img-src 'self' data:; connect-src 'self'; frame-src https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; form-action https://script.google.com; frame-ancestors 'none';"
     >
     <title>Unbroken Valkyries — Chain Watcher</title>
-    <link rel="stylesheet" href="styles.css?v=20260803-workspace-tabs">
+    <link rel="stylesheet" href="styles.css?v=20260803-status-guide">
   </head>
   <body class="identity-gate-open cw-booting" data-active-view="plan">
     <!-- Static GitHub Pages frontend. No iframe, no redirect. API calls go through config.js + app.js. -->
@@ -102,15 +102,6 @@
           <section id="stats" class="stat-grid" aria-label="Summary"></section>
         </details>
 
-        <section class="newcomer-guide" aria-labelledby="newcomer-guide-title">
-          <div>
-            <div class="eyebrow">NEED THE BASICS?</div>
-            <h2 id="newcomer-guide-title">Chain guide is in the popup</h2>
-            <p>Keep this page focused: schedule your time, then watch the coverage gaps.</p>
-          </div>
-          <button id="info-open-guide" class="button button-secondary newcomer-guide-button" type="button" aria-haspopup="dialog" aria-controls="info-modal">Read guide <span>2 min</span></button>
-        </section>
-
         <section id="my-schedule-section" class="my-bookings page-anchor" aria-labelledby="my-bookings-title">
           <header class="my-bookings-header">
             <div>
@@ -141,12 +132,12 @@
               <select id="member-select"></select>
             </div>
           </div>
-          <p class="hint">Choose Online, Watching, DUMP or Offline for each time slot. Use DUMP when you plan to spend your energy on the chain. Click the active status again to clear it. Changes are submitted only when you press Save schedule.</p>
-          <div class="legend" aria-label="Status legend">
-            <span class="legend-item"><i class="dot online"></i>Online</span>
-            <span class="legend-item"><i class="dot watching"></i>Watching</span>
-            <span class="legend-item"><i class="dot dump"></i>DUMP</span>
-            <span class="legend-item"><i class="dot offline"></i>Offline</span>
+          <p class="hint">Choose one status for each time slot. Click the active status again to clear it. Changes are submitted only when you press Save schedule.</p>
+          <div class="schedule-status-guide" aria-label="How to schedule your chain times">
+            <div class="status-guide-item online"><i class="dot online"></i><strong>Online</strong><span>You expect to be around and able to make hits.</span></div>
+            <div class="status-guide-item watching"><i class="dot watching"></i><strong>Watching</strong><span>You are keeping an eye on the chain timer and ready to save it.</span></div>
+            <div class="status-guide-item dump"><i class="dot dump"></i><strong>DUMP</strong><span>You plan to dump all your energy into attacks.</span></div>
+            <div class="status-guide-item offline"><i class="dot offline"></i><strong>Offline</strong><span>You will not be available during this time.</span></div>
           </div>
           <div class="sticky-save">
             <span id="dirty-state">No unsaved changes</span>
@@ -377,7 +368,7 @@
           </section>
 
           <footer class="info-help">
-            Questions? Ask in the Discord <strong>#Chaining</strong> channel, or message <strong>Bilbosaggins</strong>, <strong>HighlandLass</strong> or <strong>RiceGary</strong> directly.
+            Questions? Ask in the Discord <strong>#Chaining</strong> channel, or message <strong>Bilbosaggins</strong>, <strong>HighlandLass</strong> or <strong>CEO</strong> directly.
           </footer>
         </div>
       </article>
@@ -414,7 +405,7 @@
     </div>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <div id="loading" class="loading hidden" aria-hidden="true"><div class="spinner"></div><span>Working…</span></div>
-    <script src="config.js?v=20260803-workspace-tabs"></script>
-    <script src="app.js?v=20260803-workspace-tabs"></script>
+    <script src="config.js?v=20260803-status-guide"></script>
+    <script src="app.js?v=20260803-status-guide"></script>
   </body>
 </html>

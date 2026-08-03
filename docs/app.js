@@ -82,7 +82,6 @@
       }
 
       on('info-open', 'click', openInfoModal);
-      on('info-open-guide', 'click', openInfoModal);
       on('my-bookings-edit', 'click', focusSchedulePanel);
       on('info-close', 'click', closeInfoModal);
       on('info-modal', 'click', (event) => {
