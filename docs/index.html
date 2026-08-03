@@ -10,7 +10,7 @@
       content="default-src 'self'; base-uri 'none'; object-src 'none'; style-src 'self'; script-src 'self' https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; img-src 'self' data:; connect-src 'self'; frame-src https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; form-action https://script.google.com; frame-ancestors 'none';"
     >
     <title>Unbroken Valkyries — Chain Watcher</title>
-    <link rel="stylesheet" href="styles.css?v=20260803-status-guide">
+    <link rel="stylesheet" href="styles.css?v=20260803-guide-nudge">
   </head>
   <body class="identity-gate-open cw-booting" data-active-view="plan">
     <!-- Static GitHub Pages frontend. No iframe, no redirect. API calls go through config.js + app.js. -->
@@ -54,6 +54,14 @@
           <a id="profile-nav-link" class="nav-link nav-profile hidden" href="#" target="_blank" rel="noopener noreferrer"><span class="profile-status-dot" aria-hidden="true"></span><span id="profile-nav-name">My profile</span></a>
         </div>
       </nav>
+      <div id="guide-nudge" class="guide-nudge hidden" role="status" aria-live="polite">
+        <div class="guide-nudge-arrow" aria-hidden="true"></div>
+        <div class="guide-nudge-card">
+          <strong>New here?</strong>
+          <span>You may want to see how this page works.</span>
+          <button id="guide-nudge-close" type="button" aria-label="Dismiss guide hint">&times;</button>
+        </div>
+      </div>
       <header id="overview" class="hero page-anchor">
         <div class="hero-brand">
           <div class="valkyrie-mark" aria-hidden="true">
@@ -405,7 +413,7 @@
     </div>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <div id="loading" class="loading hidden" aria-hidden="true"><div class="spinner"></div><span>Working…</span></div>
-    <script src="config.js?v=20260803-status-guide"></script>
-    <script src="app.js?v=20260803-status-guide"></script>
+    <script src="config.js?v=20260803-guide-nudge"></script>
+    <script src="app.js?v=20260803-guide-nudge"></script>
   </body>
 </html>

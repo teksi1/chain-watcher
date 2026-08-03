@@ -10,6 +10,7 @@
     const SESSION_STORAGE_KEY = 'chainWatcherMemberSession';
     const SESSION_BACKUP_KEY = 'chainWatcherMemberSessionBackup';
     const VIEW_STORAGE_KEY = 'chainWatcherActiveView';
+    const GUIDE_NUDGE_STORAGE_KEY = 'chainWatcherGuideNudgeSeen';
     const WORKSPACE_VIEWS = new Set(['plan', 'team', 'details']);
     const state = {
       data: null,
@@ -25,6 +26,7 @@
       loadingCount: 0,
       toastTimer: null,
       autoRefreshTimer: null,
+      guideNudgeTimer: null,
       loadingWatchdogTimer: null,
       layoutPublishTimer: null,
       logSearchTimer: null,
@@ -59,6 +61,7 @@
       loadWarReports();
       bindEvents();
       bindLayoutPublisher();
+      scheduleGuideNudge();
       loadData(true).finally(scheduleAutoRefresh);
     });
 
@@ -81,7 +84,11 @@
         console.warn('Chain Watcher: missing .nav-resources menu');
       }
 
-      on('info-open', 'click', openInfoModal);
+      on('info-open', 'click', () => {
+        markGuideNudgeSeen();
+        openInfoModal();
+      });
+      on('guide-nudge-close', 'click', markGuideNudgeSeen);
       on('my-bookings-edit', 'click', focusSchedulePanel);
       on('info-close', 'click', closeInfoModal);
       on('info-modal', 'click', (event) => {
@@ -262,6 +269,46 @@
     function setAuthBodyState(authenticated) {
       document.body.classList.toggle('cw-authenticated', Boolean(authenticated));
       document.body.classList.toggle('cw-unauthenticated', !authenticated);
+    }
+
+    function scheduleGuideNudge() {
+      if (hasSeenGuideNudge()) return;
+      if (state.guideNudgeTimer) window.clearTimeout(state.guideNudgeTimer);
+      state.guideNudgeTimer = window.setTimeout(() => {
+        state.guideNudgeTimer = null;
+        if (hasSeenGuideNudge()) return;
+        const nudge = $('guide-nudge');
+        const guide = $('info-open');
+        if (!nudge || !guide) return;
+        if (document.body.classList.contains('identity-gate-open')) {
+          scheduleGuideNudge();
+          return;
+        }
+        rememberGuideNudgeSeen();
+        nudge.classList.remove('hidden');
+      }, 5000);
+    }
+
+    function hasSeenGuideNudge() {
+      try {
+        return localStorage.getItem(GUIDE_NUDGE_STORAGE_KEY) === '1';
+      } catch (ignore) {
+        return false;
+      }
+    }
+
+    function markGuideNudgeSeen() {
+      if (state.guideNudgeTimer) {
+        window.clearTimeout(state.guideNudgeTimer);
+        state.guideNudgeTimer = null;
+      }
+      rememberGuideNudgeSeen();
+      const nudge = $('guide-nudge');
+      if (nudge) nudge.classList.add('hidden');
+    }
+
+    function rememberGuideNudgeSeen() {
+      try { localStorage.setItem(GUIDE_NUDGE_STORAGE_KEY, '1'); } catch (ignore) {}
     }
 
     function setActiveView(view, options = {}) {
