@@ -10,7 +10,7 @@
     const SESSION_STORAGE_KEY = 'chainWatcherMemberSession';
     const SESSION_BACKUP_KEY = 'chainWatcherMemberSessionBackup';
     const VIEW_STORAGE_KEY = 'chainWatcherActiveView';
-    const GUIDE_NUDGE_STORAGE_KEY = 'chainWatcherGuideNudgeSeen';
+    const GUIDE_NUDGE_STORAGE_KEY = 'chainWatcherGuideNudgeSeenV2';
     const WORKSPACE_VIEWS = new Set(['plan', 'team', 'details']);
     const state = {
       data: null,
@@ -89,6 +89,7 @@
         openInfoModal();
       });
       on('guide-nudge-close', 'click', markGuideNudgeSeen);
+      window.addEventListener('resize', positionVisibleGuideNudge);
       on('my-bookings-edit', 'click', focusSchedulePanel);
       on('info-close', 'click', closeInfoModal);
       on('info-modal', 'click', (event) => {
@@ -284,9 +285,33 @@
           scheduleGuideNudge();
           return;
         }
+        positionGuideNudge(nudge, guide);
         rememberGuideNudgeSeen();
         nudge.classList.remove('hidden');
       }, 5000);
+    }
+
+    function positionVisibleGuideNudge() {
+      const nudge = $('guide-nudge');
+      const guide = $('info-open');
+      if (!nudge || !guide || nudge.classList.contains('hidden')) return;
+      positionGuideNudge(nudge, guide);
+    }
+
+    function positionGuideNudge(nudge, guide) {
+      const guideRect = guide.getBoundingClientRect();
+      const viewportWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+      const targetX = guideRect.left + (guideRect.width / 2);
+      const width = Math.min(viewportWidth <= 720 ? 292 : 278, viewportWidth - 28);
+      const minLeft = 14;
+      const maxLeft = Math.max(minLeft, viewportWidth - width - 14);
+      const left = Math.min(maxLeft, Math.max(minLeft, targetX - (width / 2)));
+      const top = Math.max(74, guideRect.bottom + 30);
+      const arrowX = Math.min(width - 24, Math.max(24, targetX - left));
+      nudge.style.left = `${Math.round(left)}px`;
+      nudge.style.top = `${Math.round(top)}px`;
+      nudge.style.width = `${Math.round(width)}px`;
+      nudge.style.setProperty('--guide-arrow-x', `${Math.round(arrowX)}px`);
     }
 
     function hasSeenGuideNudge() {

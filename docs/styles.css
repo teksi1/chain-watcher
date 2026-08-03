@@ -88,11 +88,9 @@
   .guide-nudge {
     position: fixed;
     top: 78px;
-    right: clamp(34px, 9vw, 158px);
+    left: 50%;
     z-index: 80;
-    display: grid;
-    justify-items: end;
-    gap: 5px;
+    width: min(278px, calc(100vw - 28px));
     pointer-events: none;
     transform: rotate(-3deg);
     filter: drop-shadow(0 16px 26px rgba(0, 0, 0, 0.46));
@@ -100,43 +98,60 @@
   }
   .guide-nudge.hidden { display: none !important; }
   .guide-nudge-arrow {
-    position: relative;
-    width: 78px;
-    height: 34px;
-    margin-right: 44px;
+    position: absolute;
+    left: var(--guide-arrow-x, 50%);
+    top: -34px;
+    width: 34px;
+    height: 38px;
+    margin-left: -17px;
+    pointer-events: none;
   }
   .guide-nudge-arrow::before {
     content: "";
     position: absolute;
-    right: 8px;
-    top: 18px;
-    width: 64px;
-    height: 3px;
+    left: 15px;
+    top: 11px;
+    width: 3px;
+    height: 31px;
     border-radius: 999px;
     background: var(--bronze-light);
     box-shadow: 0 0 14px rgba(229, 193, 124, 0.55);
-    transform: rotate(-24deg);
-    transform-origin: right center;
+    transform: rotate(17deg);
+    transform-origin: bottom center;
   }
   .guide-nudge-arrow::after {
     content: "";
     position: absolute;
-    right: 0;
-    top: 10px;
+    left: 8px;
+    top: 2px;
     width: 0;
     height: 0;
-    border-top: 7px solid transparent;
-    border-bottom: 7px solid transparent;
-    border-left: 12px solid var(--bronze-light);
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-bottom: 12px solid var(--bronze-light);
     filter: drop-shadow(0 0 8px rgba(229, 193, 124, 0.5));
-    transform: rotate(-24deg);
+    transform: rotate(17deg);
+    transform-origin: center bottom;
+  }
+  .guide-nudge-card::before {
+    content: "";
+    position: absolute;
+    left: calc(var(--guide-arrow-x, 50%) - 4px);
+    top: -4px;
+    width: 8px;
+    height: 8px;
+    transform: rotate(45deg);
+    border-left: 1px solid rgba(229, 193, 124, 0.54);
+    border-top: 1px solid rgba(229, 193, 124, 0.54);
+    background: rgba(15, 22, 24, 0.98);
   }
   .guide-nudge-card {
+    position: relative;
     pointer-events: auto;
     display: grid;
     grid-template-columns: minmax(0, 1fr) 24px;
     gap: 2px 10px;
-    width: min(278px, calc(100vw - 32px));
+    width: 100%;
     padding: 12px;
     border: 1px solid rgba(229, 193, 124, 0.54);
     border-radius: 7px 15px;
@@ -817,18 +832,10 @@
     .nav-link { flex: 0 0 auto; }
     .nav-profile { order: -1; }
     .guide-nudge {
-      top: 114px;
-      right: 14px;
-      left: 14px;
-      justify-items: end;
       transform: rotate(-2deg);
     }
-    .guide-nudge-arrow {
-      width: 68px;
-      margin-right: 70px;
-    }
     .guide-nudge-card {
-      width: min(292px, 100%);
+      width: 100%;
     }
     .nav-resource-menu { left: 0; right: auto; width: min(290px, calc(100vw - 50px)); }
     .page-anchor { scroll-margin-top: 16px; }
