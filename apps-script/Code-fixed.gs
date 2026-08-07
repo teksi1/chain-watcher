@@ -17,6 +17,7 @@ const APP = Object.freeze({
   MAX_SLOTS: 1500,
   MAX_MANUAL_MEMBERS: 25,
   DISCORD_HORIZON_HOURS: 6,
+  DISCORD_NAMES_PER_STATUS: 6,
   MEMBER_SESSION_DAYS: 30,
   IDENTITY_CONFIRM_MINUTES: 10,
   CUSTOM_KEY_URL: 'https://www.torn.com/preferences.php#tab=api?step=addNewKey&title=UnbrokenChain&user=basic',
@@ -1551,14 +1552,32 @@ function buildDiscordScheduleTable_(slots) {
   const text = rows
     .map((row) => row.map((cell, index) => cell.padEnd(widths[index], ' ')).join('  '))
     .join('\n');
-  return `\`\`\`text\n${text.slice(0, 980)}\n\`\`\``;
+  const names = slots.map(buildDiscordSlotNameSummary_).join('\n\n');
+  return trimDiscordField_(`\`\`\`text\n${text}\n\`\`\`\n${names}`, 1000);
 }
 
-function discordNames_(names) {
+function buildDiscordSlotNameSummary_(slot) {
+  const time = Utilities.formatDate(new Date(slot.iso), APP.TIME_ZONE, 'HH:mm');
+  return [
+    `**${time}**`,
+    `🟢 ${discordNames_(slot.onlineNames, APP.DISCORD_NAMES_PER_STATUS)}`,
+    `🟡 ${discordNames_(slot.watchingNames, APP.DISCORD_NAMES_PER_STATUS)}`,
+    `🟣 ${discordNames_(slot.dumpNames, APP.DISCORD_NAMES_PER_STATUS)}`,
+  ].join('\n');
+}
+
+function discordNames_(names, limit) {
   if (!names || !names.length) return 'none';
-  const visible = names.slice(0, 10).join(', ');
-  const more = names.length > 10 ? ` +${names.length - 10} more` : '';
+  limit = Number(limit || 10);
+  const visible = names.slice(0, limit).join(', ');
+  const more = names.length > limit ? ` +${names.length - limit} more` : '';
   return `${visible}${more}`;
+}
+
+function trimDiscordField_(value, maxLength) {
+  const text = String(value || '');
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, Math.max(0, maxLength - 22)).trimEnd()}\n...trimmed`;
 }
 
 function formatDiscordSlot_(iso) {
