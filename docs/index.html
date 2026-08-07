@@ -12,7 +12,7 @@
     <title>Unbroken Valkyries — Chain Watcher</title>
     <link rel="icon" type="image/png" sizes="64x64" href="assets/uv-favicon.png?v=20260803-uv-logo">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/uv-apple-touch.png?v=20260803-uv-logo">
-    <link rel="stylesheet" href="styles.css?v=20260803-hero-copy-trim">
+    <link rel="stylesheet" href="styles.css?v=20260807-discord-webhook">
   </head>
   <body class="identity-gate-open cw-booting" data-active-view="plan">
     <!-- Static GitHub Pages frontend. No iframe, no redirect. API calls go through config.js + app.js. -->
@@ -244,6 +244,7 @@
                   </select>
                 </label>
                 <label>New Torn API key (optional)<input id="admin-api-key" type="password" autocomplete="off" placeholder="Leave blank to keep the current key"></label>
+                <label>Discord webhook URL (optional)<input id="admin-discord-webhook" type="password" autocomplete="off" placeholder="Leave blank to keep the current webhook"></label>
                 <label>GitHub Pages origin<input id="admin-embed-origin" type="url" inputmode="url" placeholder="https://username.github.io"></label>
               </div>
               <div class="admin-actions">
@@ -253,6 +254,17 @@
                 <button id="admin-trigger" class="button button-ghost" type="button">Install refresh trigger</button>
               </div>
               <p id="admin-api-state" class="hint"></p>
+              <section class="discord-admin">
+                <div>
+                  <h3>Discord hourly update</h3>
+                  <p class="hint">Posts the current Online, Watching and DUMP coverage plus the next 6 hours. The webhook URL is stored only in Apps Script properties.</p>
+                </div>
+                <div class="admin-actions discord-actions">
+                  <button id="admin-discord-send" class="button button-secondary" type="button">Send Discord update now</button>
+                  <button id="admin-discord-trigger" class="button button-ghost" type="button">Install Discord trigger</button>
+                </div>
+                <p id="admin-discord-state" class="hint" aria-live="polite"></p>
+              </section>
               <section class="event-export-admin">
                 <div>
                   <h3>Event sheets &amp; export</h3>
@@ -412,7 +424,7 @@
     </div>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <div id="loading" class="loading hidden" aria-hidden="true"><div class="spinner"></div><span>Working…</span></div>
-    <script src="config.js?v=20260803-hero-copy-trim"></script>
-    <script src="app.js?v=20260803-hero-copy-trim"></script>
+    <script src="config.js?v=20260807-discord-webhook"></script>
+    <script src="app.js?v=20260807-discord-webhook"></script>
   </body>
 </html>

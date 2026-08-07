@@ -557,10 +557,11 @@
   .admin-content { margin-top: 20px; }
   .admin-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
   .admin-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-  .event-export-admin { display: grid; gap: 12px; margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line); }
-  .event-export-admin h3 { margin: 0 0 5px; font-size: 1rem; }
-  .event-export-admin .hint { margin-bottom: 0; }
+  .event-export-admin, .discord-admin { display: grid; gap: 12px; margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--line); }
+  .event-export-admin h3, .discord-admin h3 { margin: 0 0 5px; font-size: 1rem; }
+  .event-export-admin .hint, .discord-admin .hint { margin-bottom: 0; }
   .event-export-actions { margin-top: 0; }
+  .discord-actions { margin-top: 0; }
   .event-export-result { min-height: 1.2em; }
   .event-export-result a { color: var(--bronze-light); font-weight: 780; text-decoration: none; }
   .event-export-result a:hover { color: var(--ice); text-decoration: underline; }

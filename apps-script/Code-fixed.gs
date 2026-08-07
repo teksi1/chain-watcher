@@ -16,6 +16,7 @@ const APP = Object.freeze({
   ALLOWED_REFRESH_MINUTES: [1, 5, 10, 15, 30],
   MAX_SLOTS: 1500,
   MAX_MANUAL_MEMBERS: 25,
+  DISCORD_HORIZON_HOURS: 6,
   MEMBER_SESSION_DAYS: 30,
   IDENTITY_CONFIRM_MINUTES: 10,
   CUSTOM_KEY_URL: 'https://www.torn.com/preferences.php#tab=api?step=addNewKey&title=UnbrokenChain&user=basic',
@@ -231,6 +232,8 @@ function getApiHandlers_() {
     adminSyncMembers,
     adminRefreshStatuses,
     adminInstallStatusTrigger,
+    adminInstallDiscordTrigger,
+    adminSendDiscordUpdate,
     adminCreateEventSheet,
     adminExportEventCsv,
     adminAddManualMember,
@@ -821,6 +824,9 @@ function getAdminState(secret, options) {
     slotMinutes: Number(config.SLOT_MINUTES),
     refreshMinutes: Number(config.STATUS_REFRESH_MINUTES || 5),
     apiConfigured: Boolean(props.getProperty('TORN_API_KEY')),
+    discordConfigured: Boolean(props.getProperty('DISCORD_WEBHOOK_URL')),
+    discordTriggerInstalled: hasTrigger_('sendDiscordChainWebhook'),
+    discordLastPostHour: props.getProperty('DISCORD_LAST_POST_HOUR') || '',
     embedOrigin: getEmbedAllowedOrigin_(),
     manualMembers,
   };
@@ -868,6 +874,12 @@ function saveAdminSettings(settings, secret) {
   });
   if (String(settings.apiKey || '').trim()) {
     PropertiesService.getScriptProperties().setProperty('TORN_API_KEY', String(settings.apiKey).trim());
+  }
+  if (String(settings.discordWebhookUrl || '').trim()) {
+    PropertiesService.getScriptProperties().setProperty(
+      'DISCORD_WEBHOOK_URL',
+      normalizeDiscordWebhookUrl_(settings.discordWebhookUrl),
+    );
   }
   if (Object.prototype.hasOwnProperty.call(settings, 'embedOrigin')) {
     const embedOrigin = normalizeEmbedOrigin_(settings.embedOrigin);
@@ -947,6 +959,42 @@ function adminInstallStatusTrigger(secret) {
     details: { minutes },
   });
   return { ok: true, minutes };
+}
+
+function adminInstallDiscordTrigger(secret) {
+  assertAdmin_(secret);
+  installDiscordTrigger_();
+  logEvent_({
+    level: 'INFO',
+    category: 'admin',
+    action: 'admin_install_discord_trigger',
+    actorName: 'Admin',
+    source: 'backend',
+    outcome: 'success',
+    message: 'Admin installed Discord hourly trigger',
+    details: { horizonHours: APP.DISCORD_HORIZON_HOURS },
+  });
+  return getAdminState(secret, { silent: true });
+}
+
+function adminSendDiscordUpdate(secret) {
+  assertAdmin_(secret);
+  const result = postDiscordChainUpdate_({ force: true, source: 'admin' });
+  logEvent_({
+    level: 'INFO',
+    category: 'admin',
+    action: 'admin_send_discord_update',
+    actorName: 'Admin',
+    source: 'backend',
+    outcome: 'success',
+    message: 'Admin sent Discord Chain Watcher update',
+    details: result,
+  });
+  return result;
+}
+
+function sendDiscordChainWebhook() {
+  return postDiscordChainUpdate_({ force: false, source: 'trigger' });
 }
 
 /**
@@ -1363,6 +1411,162 @@ function installStatusTrigger_(minutes) {
     .filter((trigger) => trigger.getHandlerFunction() === 'refreshTornStatus')
     .forEach((trigger) => ScriptApp.deleteTrigger(trigger));
   ScriptApp.newTrigger('refreshTornStatus').timeBased().everyMinutes(minutes).create();
+}
+
+function installDiscordTrigger_() {
+  if (!PropertiesService.getScriptProperties().getProperty('DISCORD_WEBHOOK_URL')) {
+    throw new Error('Discord webhook URL has not been configured.');
+  }
+  ScriptApp.getProjectTriggers()
+    .filter((trigger) => trigger.getHandlerFunction() === 'sendDiscordChainWebhook')
+    .forEach((trigger) => ScriptApp.deleteTrigger(trigger));
+  ScriptApp.newTrigger('sendDiscordChainWebhook').timeBased().everyHours(1).create();
+}
+
+function hasTrigger_(handlerName) {
+  return ScriptApp.getProjectTriggers()
+    .some((trigger) => trigger.getHandlerFunction() === handlerName);
+}
+
+function normalizeDiscordWebhookUrl_(value) {
+  const url = String(value || '').trim();
+  if (!/^https:\/\/(discord|discordapp)\.com\/api\/webhooks\/\d+\/[A-Za-z0-9._~-]+$/i.test(url)) {
+    throw new Error('Enter a valid Discord webhook URL.');
+  }
+  return url;
+}
+
+function postDiscordChainUpdate_(options) {
+  options = options || {};
+  ensureInstalled_();
+  const props = PropertiesService.getScriptProperties();
+  const webhookUrl = props.getProperty('DISCORD_WEBHOOK_URL');
+  if (!webhookUrl) throw new Error('Discord webhook URL has not been configured.');
+
+  const config = getConfig_();
+  const now = new Date();
+  const startMs = Date.parse(config.WEEKEND_START);
+  const endMs = Date.parse(config.WEEKEND_END);
+  const nowMs = now.getTime();
+  const eventActive = nowMs >= startMs && nowMs < endMs;
+  if (!options.force && !eventActive) {
+    return { ok: true, skipped: true, reason: 'outside_event_window' };
+  }
+
+  const hourKey = Utilities.formatDate(now, APP.TIME_ZONE, 'yyyy-MM-dd HH:00');
+  if (!options.force && props.getProperty('DISCORD_LAST_POST_HOUR') === hourKey) {
+    return { ok: true, skipped: true, reason: 'already_posted_this_hour', hourKey };
+  }
+
+  const effectiveMs = eventActive ? nowMs : Math.min(Math.max(nowMs, startMs), Math.max(startMs, endMs - 1));
+  const payload = buildDiscordChainPayload_(config, new Date(effectiveMs), {
+    eventActive,
+    preview: Boolean(options.force && !eventActive),
+  });
+  const response = UrlFetchApp.fetch(webhookUrl, {
+    method: 'post',
+    contentType: 'application/json',
+    payload: JSON.stringify(payload),
+    muteHttpExceptions: true,
+  });
+  const code = response.getResponseCode();
+  if (code < 200 || code >= 300) {
+    throw new Error(`Discord webhook failed with HTTP ${code}: ${response.getContentText().slice(0, 220)}`);
+  }
+
+  if (!options.force) props.setProperty('DISCORD_LAST_POST_HOUR', hourKey);
+  return { ok: true, statusCode: code, hourKey, preview: Boolean(options.force && !eventActive) };
+}
+
+function buildDiscordChainPayload_(config, displayNow, options) {
+  const slots = generateSlots_(config);
+  const slotMs = Number(config.SLOT_MINUTES) * 60000;
+  const endMs = Date.parse(config.WEEKEND_END);
+  const members = getMembers_().filter((member) => member.active);
+  const slotSet = new Set(slots);
+  const memberIds = new Set(members.map((member) => String(member.id)));
+  const availabilityRows = getAvailability_().filter((row) => (
+    slotSet.has(row.slotIso) && memberIds.has(String(row.memberId))
+  ));
+  const coverage = buildCoverage_(slots, members, availabilityRows);
+  const current = coverage.find((slot) => {
+    const start = Date.parse(slot.iso);
+    return start <= displayNow.getTime() && displayNow.getTime() < start + slotMs;
+  }) || coverage.find((slot) => Date.parse(slot.iso) >= displayNow.getTime()) || coverage[coverage.length - 1];
+  const horizonEnd = Math.min(endMs, Date.parse(current.iso) + APP.DISCORD_HORIZON_HOURS * 3600000);
+  const horizon = coverage.filter((slot) => {
+    const timestamp = Date.parse(slot.iso);
+    return timestamp >= Date.parse(current.iso) && timestamp < horizonEnd;
+  });
+  const currentLabel = current ? formatDiscordSlot_(current.iso) : 'No active slot';
+  const titlePrefix = options && options.preview ? 'Preview: ' : '';
+  return {
+    username: 'Chain Watcher',
+    content: `${titlePrefix}**Chain coverage update**`,
+    embeds: [{
+      title: `${titlePrefix}Chain Watcher coverage`,
+      description: `${formatDiscordRange_(config.WEEKEND_START, config.WEEKEND_END)} TCT`,
+      color: 12950130,
+      fields: [
+        {
+          name: `Now: ${currentLabel} TCT`,
+          value: current ? buildDiscordCurrentSummary_(current) : 'No active schedule slot.',
+          inline: false,
+        },
+        {
+          name: `Next ${APP.DISCORD_HORIZON_HOURS} hours`,
+          value: buildDiscordScheduleTable_(horizon),
+          inline: false,
+        },
+      ],
+      footer: {
+        text: `Updated ${Utilities.formatDate(new Date(), APP.TIME_ZONE, 'dd/MM HH:mm')} TCT`,
+      },
+      timestamp: new Date().toISOString(),
+    }],
+    allowed_mentions: { parse: [] },
+  };
+}
+
+function buildDiscordCurrentSummary_(slot) {
+  return [
+    `🟢 **Online (${slot.onlineCount})**: ${discordNames_(slot.onlineNames)}`,
+    `🟡 **Watching (${slot.watchingCount})**: ${discordNames_(slot.watchingNames)}`,
+    `🟣 **DUMP (${slot.dumpCount})**: ${discordNames_(slot.dumpNames)}`,
+  ].join('\n');
+}
+
+function buildDiscordScheduleTable_(slots) {
+  if (!slots.length) return 'No upcoming slots in this window.';
+  const rows = [
+    ['TCT', 'Online', 'Watch', 'Dump'],
+    ...slots.map((slot) => [
+      Utilities.formatDate(new Date(slot.iso), APP.TIME_ZONE, 'HH:mm'),
+      String(slot.onlineCount),
+      String(slot.watchingCount),
+      String(slot.dumpCount),
+    ]),
+  ];
+  const widths = rows[0].map((_, index) => Math.max(...rows.map((row) => row[index].length)));
+  const text = rows
+    .map((row) => row.map((cell, index) => cell.padEnd(widths[index], ' ')).join('  '))
+    .join('\n');
+  return `\`\`\`text\n${text.slice(0, 980)}\n\`\`\``;
+}
+
+function discordNames_(names) {
+  if (!names || !names.length) return 'none';
+  const visible = names.slice(0, 10).join(', ');
+  const more = names.length > 10 ? ` +${names.length - 10} more` : '';
+  return `${visible}${more}`;
+}
+
+function formatDiscordSlot_(iso) {
+  return Utilities.formatDate(new Date(iso), APP.TIME_ZONE, 'dd/MM HH:mm');
+}
+
+function formatDiscordRange_(start, end) {
+  return `${formatDiscordSlot_(start)} – ${formatDiscordSlot_(end)}`;
 }
 
 function normalizeEventReportRange_(range) {
@@ -2015,6 +2219,9 @@ function sanitizeLogDetails_(details) {
     'token',
     'secret',
     'authorization',
+    'webhook',
+    'discordwebhook',
+    'webhookurl',
   ];
 
   let clone;

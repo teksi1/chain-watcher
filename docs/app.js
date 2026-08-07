@@ -119,6 +119,8 @@
       on('admin-sync', 'click', () => runAdminAction('adminSyncMembers', 'Members synced.'));
       on('admin-status', 'click', () => runAdminAction('adminRefreshStatuses', 'Torn statuses refreshed.'));
       on('admin-trigger', 'click', () => runAdminAction('adminInstallStatusTrigger', 'Refresh trigger installed.'));
+      on('admin-discord-send', 'click', sendDiscordUpdate);
+      on('admin-discord-trigger', 'click', installDiscordTrigger);
       on('admin-report-sheet', 'click', createEventReportSheet);
       on('admin-export-csv', 'click', downloadEventCsv);
       on('admin-add-member', 'click', addManualMember);
@@ -1150,10 +1152,16 @@
       $('admin-slot-minutes').value = String(admin.slotMinutes);
       $('admin-refresh-minutes').value = String(admin.refreshMinutes);
       $('admin-api-key').value = '';
+      $('admin-discord-webhook').value = '';
       $('admin-embed-origin').value = admin.embedOrigin || '';
       $('admin-api-state').textContent = admin.apiConfigured
         ? 'The Torn API key is stored in Script Properties.'
         : 'The Torn API key has not been configured.';
+      $('admin-discord-state').textContent = [
+        admin.discordConfigured ? 'Discord webhook is configured.' : 'Discord webhook has not been configured.',
+        admin.discordTriggerInstalled ? 'Hourly trigger is installed.' : 'Hourly trigger is not installed.',
+        admin.discordLastPostHour ? `Last automatic post: ${admin.discordLastPostHour} TCT.` : '',
+      ].filter(Boolean).join(' ');
       $('admin-export-result').textContent = '';
       renderManualMembers(admin.manualMembers || []);
       loadActivityLog(false);
@@ -1328,6 +1336,7 @@
         slotMinutes: Number($('admin-slot-minutes').value),
         refreshMinutes: Number($('admin-refresh-minutes').value),
         apiKey: $('admin-api-key').value.trim(),
+        discordWebhookUrl: $('admin-discord-webhook').value.trim(),
         embedOrigin: $('admin-embed-origin').value.trim(),
       };
       setLoading(true);
@@ -1337,6 +1346,39 @@
         if (admin.archivedReport) showEventReportLink(admin.archivedReport, 'Previous event archived: ');
         await loadData(false);
         toast('Admin settings saved.');
+      } catch (error) {
+        showError(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function sendDiscordUpdate() {
+      const stateLine = $('admin-discord-state');
+      setLoading(true);
+      try {
+        const result = await server('adminSendDiscordUpdate', state.adminSecret);
+        if (stateLine) {
+          stateLine.textContent = result && result.preview
+            ? 'Preview Discord update sent.'
+            : 'Discord update sent.';
+        }
+        toast('Discord update sent.');
+      } catch (error) {
+        showError(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    async function installDiscordTrigger() {
+      const stateLine = $('admin-discord-state');
+      setLoading(true);
+      try {
+        const admin = await server('adminInstallDiscordTrigger', state.adminSecret);
+        populateAdmin(admin);
+        if (stateLine) stateLine.textContent = 'Discord hourly trigger installed.';
+        toast('Discord trigger installed.');
       } catch (error) {
         showError(error);
       } finally {
